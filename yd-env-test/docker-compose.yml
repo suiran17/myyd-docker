@@ -145,11 +145,11 @@ services:
     # 测服环境变量, 影响配置文件读取
     # environment:
     #   APPLICATION_ENV: test
-    ports:
-      - "9000:9000"
+    # ports:
+      # - "9000:9000"
       # - "9001:9001"
       # - "9002:9002"
-      - "9003:9003"
+      # - "9003:9003"
       # - "9004:9004"
     command: /root/script/start_phpfpm.sh
     restart: always
