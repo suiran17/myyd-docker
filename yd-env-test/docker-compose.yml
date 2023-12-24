@@ -141,8 +141,16 @@ services:
       - ./phpc7/php-fpm.d:/usr/local/php/etc/php-fpm.d
       - /data/docker/php/log:/var/log/php:rw
       - ./logs/php:/var/log/php                                     # php log
-    environment:
-      APPLICATION_ENV: test
+
+    # 测服环境变量, 影响配置文件读取
+    # environment:
+    #   APPLICATION_ENV: test
+    ports:
+      - "9000:9000"
+      # - "9001:9001"
+      # - "9002:9002"
+      - "9003:9003"
+      # - "9004:9004"
     command: /root/script/start_phpfpm.sh
     restart: always
   # phpscript:
@@ -162,6 +170,30 @@ services:
   #     APPLICATION_ENV: test
   #   command: /root/script/crontab_processd.sh
   #   restart: always
+
+
+
+  mysql:
+    image: mariadb:10.6 # 本地 mac 使用这个版本
+    container_name: ${CONTAINER_NAME}
+    ports:
+      - "${MARIADB_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${MARIADB_DATA}/:/var/lib/mysql
+    restart: always
+    # restart: ${RESTART_MODE}
+    privileged: true
+
+
+
+
+
+
+
+
+
   nginx:
     container_name: nginx
     # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
