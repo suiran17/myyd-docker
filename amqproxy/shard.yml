@@ -1,0 +1,23 @@
+name: amqproxy
+version: 0.4.8
+
+authors:
+  - CloudAMQP <contact@cloudamqp.com>
+
+targets:
+  amqproxy:
+    main: src/amqproxy.cr
+
+dependencies:
+  amq-protocol:
+    github: cloudamqp/amq-protocol.cr
+    # path: ../amq-protocol.cr
+
+development_dependencies:
+  amqp-client:
+    github: cloudamqp/amqp-client.cr
+    # path: ../amqp-client.cr
+
+crystal: 0.35.1
+
+license: MIT

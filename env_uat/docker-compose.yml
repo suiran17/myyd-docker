@@ -1,0 +1,208 @@
+---
+version: '3.7'
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet:   172.1.0.1/24
+volumes:
+    pg_data:
+        name: pg_data
+        driver: local
+    #sentinel
+    ydredis_data_6379:
+        name: ydredis_data_6379
+        driver: local
+    ydredis_data_6380:
+        name: ydredis_data_6380
+        driver: local
+    ydredis_data_6381:
+        name: ydredis_data_6381
+        driver: local
+services:
+    memcached:
+        image: docker.io/memcached:alpine
+        ports:
+            - 11211:11211
+        restart: always
+    beanstalkd:
+        container_name: beanstalkd
+        image: docker.nodevops.cn/web/yd-beanstalkd:v1.0
+        ports:
+            - 11300:11300
+        volumes:
+            - /data/docker/beanstalkd:/var/lib/beanstalkd
+        command: -z 655350 -b /var/lib/beanstalkd/ -F
+        restart: always
+    redis:
+        image: docker.io/redis:alpine
+        ports:
+            - 6379:6379
+        restart: always
+    ## apollo
+    apollo_portal:
+        image: docker.nodevops.cn/web/apollo_portal:v0.0.6
+        ports:
+          - 10000:10000
+    apollo_config:
+        image: docker.nodevops.cn/web/apollo_config_uat:v0.0.6
+        ports:
+            - 10041:10001
+            - 10042:10002
+    ## 网关
+    kong:
+        image: docker.nodevops.cn/web/kong_pre:v0.2
+        ports:
+            - 8000:8000
+            - 8001:8001
+            - 8443:8443
+            - 8444:8444
+    konga:
+        image: docker.io/pantsel/konga:latest
+        container_name: konga
+        ports:
+            - 1337:1337
+        environment:
+            TOKEN_SECRET: kongpapre123456
+            DB_ADAPTER: postgres
+            DB_URI: postgresql://kongapre:kongapre123@172.16.100.188:5432/kongapre?connect_timeout=10&application_name=kongapre
+            NODE_ENV: production
+
+    ## 容器管理
+    portainer:
+        image: portainer/portainer:latest
+        ports:
+            - 9005:9000
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:cached
+            - /data/docker/portainer:/data:cached
+        restart: always
+
+    ## 数据库
+    pg11:
+        image: docker.nodevops.cn/web/pg11:v0.2
+        ports:
+            - 5432:5432
+        volumes:
+            - pg_data:/var/lib/pgsql/11/data/
+    mysql:
+        image: docker.nodevops.cn/web/ydmysql:8.0.13
+        container_name: mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+            - /data/docker/mysql:/var/lib/mysql/:rw
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+            TZ: Asia/Shanghai
+    ## php环境   conf  logs
+    nginx:
+        image: docker.nodevops.cn/web/nginx:1.19-alpine-yd
+        container_name: nginx
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - /data/www:/www/:rw
+            - ./nginx/ssl:/ssl:rw
+            - ./nginx/conf.d:/etc/nginx/conf.d/:rw
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - /data/docker/log/nginx:/var/log/nginx/:rw
+        environment:
+            TZ: Asia/Shanghai
+        restart: always
+    #php:
+    #    image: docker.nodevops.cn/web/php:7.2-alpine-yddev
+    #    container_name: php
+    #    volumes:
+    #        - /data/www:/www/:rw
+    #        - /data/www/tmp:/tmp/:rw
+    #        - ./php/php.ini:/usr/local/etc/php/php.ini:ro
+    #        - ./php/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+    #        - /data/docker/log/php:/var/log/php:rw
+    #    environment:
+    #        APPLICATION_ENV: uat
+    #    cap_add:
+    #        - SYS_PTRACE
+    #    restart: always
+    php:
+        container_name: php
+        image: docker.nodevops.cn/web/php:7.2-yd
+        volumes:
+            - ./common/hosts:/etc/hosts
+            - /data/www:/www/:rw
+            - /data/www/tmp:/tmp/:rw
+            - ./phpc7/script:/root/script
+            - ./phpc7/php.d:/usr/local/php-7.2.33/etc/php.d:ro
+            - ./phpc7/php.ini:/usr/local/php-7.2.33/etc/php.ini:ro
+            - ./phpc7/php-fpm.conf:/usr/local/php-7.2.33/etc/php-fpm.conf:rw
+            - ./phpc7/php-fpm.d:/usr/local/php-7.2.33/etc/php-fpm.d
+            - /data/docker/php/log:/var/log/php:rw
+        environment:
+            APPLICATION_ENV: test
+        command: /root/script/start_phpfpm.sh
+        restart: always
+    #ydredis sentinel
+    senti_redis_6379:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_redis_6379
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+            - ydredis_data_6379:/data
+        command: redis-server /etc/redis/redis_6379.conf
+        network_mode: "host"
+    senti_redis_6380:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_redis_6380
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+            - ydredis_data_6380:/data
+        command: redis-server /etc/redis/redis_6380.conf
+        network_mode: "host"
+    senti_redis_6381:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_redis_6381
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+            - ydredis_data_6381:/data
+        command: redis-server /etc/redis/redis_6381.conf
+        network_mode: "host"
+
+    senti_26379:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_26379
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+        command: redis-sentinel /etc/redis/senti_26379.conf
+        network_mode: "host"
+    senti_26380:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_26380
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+        command: redis-sentinel /etc/redis/senti_26380.conf
+        network_mode: "host"
+    senti_26381:
+        image: docker.nodevops.cn/web/redis:5_yd
+        container_name: senti_26381
+        volumes:
+            - ./redis_sentinel/:/etc/redis
+        command: redis-sentinel /etc/redis/senti_26381.conf
+        network_mode: "host"
+    mongo:
+        container_name: mongo
+        #image: harbor-jh.bs58i.baishancdnx.com/safe_biz/mongo
+        image: docker.nodevops.cn/web/mongo:4.4
+        ports:
+          - 27017:27017
+        #environment:
+        #  MONGO_INITDB_ROOT_USERNAME: admin
+        #  MONGO_INITDB_ROOT_PASSWORD: admin
+        volumes:
+          - ./mongo/mongod.conf:/etc/mongod.conf
+          - /data/docker/mongo:/data/db
+        #command: --serviceExecutor adaptive --config /etc/mongo/mongod.conf
+        restart: always

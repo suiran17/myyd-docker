@@ -1,0 +1,53 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+#zabbix
+114.55.251.13 zabbix.adminv5.com
+
+172.16.100.226 redis.yundun.com memcache.yundun.com
+#172.16.100.106 beanstalk.yundun.com
+#172.16.100.241  beanstalk.yundun.com
+172.16.100.226 beanstalk.yundun.com
+172.16.100.250 beanstalklog250.yundun.com
+172.16.100.242 mariadb.yundun.com
+172.16.100.245 homev4cli2dnsdb.yundun.com
+172.16.100.242 apiv4.yundun.com
+172.16.100.44 elastic01.yundun.com
+172.16.100.52 elastic02.yundun.com
+172.16.100.235 clickhouse.yundun.com
+172.16.100.102  api.ddos.yundun.com
+#59.56.79.246 sso.yundun.com
+172.16.100.71 git.nodevops.cn
+172.16.100.242 sso.yundun.com
+172.16.100.87 api.mcs.com
+127.0.0.1 feature-930.yundunapiv4.pre.nodevops.cn
+127.0.0.1 feature-audit.yundunapiv4.pre.nodevops.cn
+127.0.0.1 adminv5api.pre.nodevops.cn
+127.0.0.1 feature-audit.adminv5api.pre.nodevops.cn
+127.0.0.1 feature-2409.adminv5api.pre.nodevops.cn
+127.0.0.1 sso-backend-server.pre.nodevops.cn
+
+#网关
+127.0.0.1 agw.pre.nodevops.cn
+
+59.56.78.61 api.yundun.cn
+#丁兆鹏扫备案host
+180.97.220.196 web.ding.yundun.com
+
+#仿真用户测试环境
+142.4.217.28 yum.mariadb.org
+172.16.100.165 redis.uat.nodevops.cn
+172.16.100.165 mariadb.uat.nodevops.cn
+172.16.100.165 memcache.uat.nodevops.cn
+172.16.100.165 beanstalk.uat.nodevops.cn
+172.16.100.165 redis.uat.nodevops.cn
+172.16.100.165 homev5.uat.nodevops.cn
+172.16.100.165 adminv3.uat.nodevops.cn
+172.16.100.165 adminv5.uat.nodevops.cn
+172.16.100.165 sso-server.uat.nodevops.cn
+172.16.100.165 yundunapiv4.uat.nodevops.cn
+172.16.100.165 adminv3-agent.uat.nodevops.cn
+172.16.100.165 adminv5api.uat.nodevops.cn
+172.16.100.165 ws.uat.nodevops.cn
+172.16.100.165 sso-backend-server.uat.nodevops.cn
+172.16.100.165 jwlocal0

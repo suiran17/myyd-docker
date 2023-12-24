@@ -1,0 +1,39 @@
+version: "3"
+services:
+  ngx118yd:
+    build:
+      context: ./images/alpine/
+      args:
+        IMAGE: "docker.io/alpine:3.11"
+        PKGS: "autoconf g++ gcc libtool linux-headers make git file curl curl-dev pcre pcre-dev libxml2-dev libxslt-dev gd-dev geoip geoip-dev"
+        NGINX_VERSION: "nginx-1.18.0"
+        LUAJIT_VERSION: "luajit2-2.1-20200102"
+        NGX_DEVEL_KIT_VERSION: "ngx_devel_kit-0.3.1"
+        LUA_NGINX_VERSION: "lua-nginx-module-0.10.16rc5"
+        RESTY_LIBS: "lua-resty-core-0.1.18rc4 lua-resty-lrucache-0.10rc1"
+    image: docker.nodevops.cn/web/nginx:1.18-alpine-yd
+  ngx119yd:
+    build:
+      context: ./images/alpine/
+      args:
+        IMAGE: "docker.io/alpine:3.11"
+        PKGS: "autoconf g++ gcc libtool linux-headers make git file curl curl-dev pcre pcre-dev libxml2-dev libxslt-dev gd-dev geoip geoip-dev"
+        NGINX_VERSION: nginx-1.19.0
+        LUAJIT_VERSION: luajit2-2.1-20200102
+        NGX_DEVEL_KIT_VERSION: ngx_devel_kit-0.3.1
+        LUA_NGINX_VERSION: lua-nginx-module-0.10.16rc5
+        RESTY_LIBS: "lua-resty-core-0.1.18rc4 lua-resty-lrucache-0.10rc1"
+    image: docker.nodevops.cn/web/nginx:1.19-alpine-yd
+  test:
+    image: docker.nodevops.cn/web/nginx:1.18-alpine-yd
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /data/www:/www/:rw                         # 代码目录
+      - ./conf/ssl:/etc/nginx/ssl/:rw              # ssl 证书目录
+      - ./conf/conf.d:/etc/nginx/conf.d/:rw        # 虚拟主机配置目录
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro # nginx 配置目录
+      - /data/docker/nginx/log:/var/log/nginx/:rw  # nginx 日志目录
+    restart: always

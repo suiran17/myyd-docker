@@ -1,0 +1,53 @@
+name: Build packages
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  static:
+    name: Static
+    runs-on: ubuntu-latest
+    container:
+      image: crystallang/crystal:latest-alpine
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: shards install --production
+      - name: Build
+        run:  build/tar 1
+      - name: Upload github artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: '*.tar.gz'
+          name: tar
+
+  deb:
+    name: Deb
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Crystal
+        run: sudo snap install crystal --classic
+
+      - name: Install dependencies
+        run: sudo apt-get install -y libsystemd-dev dpkg fakeroot help2man lintian build-essential gcc pkg-config git tzdata libpcre3-dev libevent-dev libyaml-dev libgmp-dev libssl-dev libxml2-dev
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build deb package
+        run: build/deb
+
+      - name: Test start
+        run: bin/amqproxy --version
+
+      - name: Upload github artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: builds/debian/**
+          name: deb

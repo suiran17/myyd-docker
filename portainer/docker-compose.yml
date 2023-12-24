@@ -1,0 +1,11 @@
+version: "3"
+services:
+  portainer:
+    image: portainer/portainer:latest
+    ports:
+      - "9005:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:cached
+      - ./portainer/:/data:cached
+    restart: always
+#default pass 12345678

@@ -1,0 +1,519 @@
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     400000
+    user        haproxy
+    group       haproxy
+    daemon
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+    tune.bufsize 40960
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    log                     global
+    option                  tcplog
+    option                  dontlognull
+    option                  redispatch
+    retries                 3
+    timeout connect         1d
+    timeout client          1d
+    timeout server          1d
+    maxconn                 300000
+
+#listen stats
+    #mode http
+    #bind 172.16.100.247:10086
+    #stats enable
+    #stats hide-version
+    #stats uri     /haproxyadmin?stats
+    #stats realm   Haproxy\ Statistics
+    #stats auth    admin:YUNdun@888.
+    #stats admin if TRUE
+
+listen MariaDB *:3306
+    mode tcp
+    balance leastconn
+    #balance roundrobin
+    #server DBnode001 172.16.100.243:3306 check port 3306
+    #server DBnode002 172.16.100.244:3306 check port 3306
+    #db003作为tcpdup目标，不参与负载均衡
+    server DBnode003 172.16.100.245:3306 check port 3306
+
+listen RabbitMQ *:9999
+    mode tcp
+    balance leastconn
+    #balance roundrobin
+    server RabbitMQ01 172.16.100.26:5671 check port 5671
+    server RabbitMQ02 172.16.100.26:5672 check port 5672
+    server RabbitMQ03 172.16.100.27:5671 check port 5671
+    server RabbitMQ04 172.16.100.27:5672 check port 5672
+
+listen LDAP *:389
+    mode tcp
+    #balance leastconn
+    balance roundrobin
+    server LDAPnode001 172.16.100.227:389 check port 389
+    server LDAPnode002 172.16.100.228:389 check port 389
+#listen Adminv3 *:443
+#    mode tcp
+#    option tcplog
+#    balance roundrobin
+#    server Adminnode001 172.16.100.241:443 check port 443
+#    server Adminnode002 172.16.100.250:443 check port 443
+
+listen Web *:80
+    mode http
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    option httpclose
+    option logasap
+    option dontlognull
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    capture request  header Host len 20
+    capture request  header Referer len 60
+    #遭遇针对某页面的CC攻击，开启访问控制
+    #acl denyfile path /report/ccwaf
+    #acl denyfile path /report/ddos
+    #http-request deny if denyfile
+#---------------------------------------------------------------------
+#三段都要写，且顺序对应，cookie数字+1
+#yundun.cn段一定按顺序从上往下写
+    acl is_apicn hdr_end(host) -i api.yundun.cn
+    acl is_yunduncn hdr_end(host) -i yundun.cn
+    
+#yundun.com段一定按顺序从上往下写 
+    #acl is_yundun hdr_end(host) -i www.yundun.com
+    acl is_adminv5api hdr_end(host) -i adminv5api.yundun.com
+    acl is_testadminv5api hdr_end(host) -i testadminv5api.yundun.com
+    acl is_apiv4 hdr_end(host) -i apiv4.yundun.com
+    acl is_apicom hdr_end(host) -i api.yundun.com
+    acl is_agwcom hdr_end(host) -i agw.yundun.com
+    acl is_gamesecurity hdr_end(host) -i game_security.yundun.com
+    acl is_agent hdr_end(host) -i agent.yundun.com
+    acl is_sso hdr_end(host) -i sso.yundun.com
+    acl is_passport hdr_end(host) -i passport.yundun.com
+    acl is_cloud hdr_end(host) -i cloud.yundun.com
+    acl is_v4 hdr_end(host) -i v4.yundun.com
+    acl is_homev5 hdr_end(host) -i homev5.yundun.com
+    acl is_yunduncom hdr_end(host) -i yundun.com
+    #沃防云-01
+    acl is_homev5wofang_yundun_com hdr_end(host) -i homev5wofang.yundun.com
+    #代理商公api-01
+    acl is_apiv4agent_yundun_com hdr_end(host) -i apiv4agent.yundun.com
+    #代理商公用用户中心sso-01
+    acl is_ssoagent_yundun_com hdr_end(host) -i ssoagent.yundun.com
+    #webxury-01
+    #acl is_homev5webxury_yundun_com hdr_end(host) -i homev5webxury.yundun.com
+    #成创-成极抗D代理
+    acl is_homev5cjkd_yundun_com hdr_end(host) -i homev5cjkd.yundun.com
+    #寰动科技代理
+    acl is_homev5hdkj_yundun_com hdr_end(host) -i homev5hdkj.yundun.com
+    #游侠盾代理
+    acl is_homev5yxd_yundun_com hdr_end(host) -i homev5yxd.yundun.com
+    #666网络代理
+    #acl is_homev5666_yundun_com hdr_end(host) -i homev5666.yundun.com
+    #卫士通代理
+    acl is_homev5wst_yundun_com hdr_end(host) -i homev5wst.yundun.com
+    #白山代理
+    acl is_homev5baishanself_yundun_com hdr_end(host) -i homev5baishanself.yundun.com
+    #白山代理API
+    acl is_apiv4baishan hdr_end(host) -i apiv4baishan.yundun.com
+    #oem   ssooem.yundun.com 有异常不能转发到后台所以用 ssooem.yunduninner.com
+    acl is_oem hdr_end(host) -i oem.yundun.com
+    acl is_ssooem hdr_end(host) -i ssooem.yundun.com
+    acl is_ssooem hdr_end(host) -i ssooem.yunduninner.com
+    acl is_apiv4oem hdr_end(host) -i apiv4oem.yundun.com
+
+#零散域名	
+    acl is_admin0731 hdr_end(host) -i admin0731.ccitsec.com
+    acl is_admin hdr_end(host) -i adminv5.com
+    acl is_ecsadmin hdr_end(host) -i ecs-admin.adminv5.com
+    acl is_hwws hdr_end(host) -i hwws.cn
+    acl is_yunduncrm hdr_end(host) -i yunduncrm.com
+    acl is_adminv6 hdr_end(host) -i adminv6.com
+#---------------------------------------------------------------------
+    use_backend apicn if is_apicn
+    use_backend yunduncn if is_yunduncn
+
+    use_backend adminv5api if is_adminv5api
+    use_backend testadminv5api if is_testadminv5api
+    use_backend apiv4 if is_apiv4
+    use_backend apicom if is_apicom
+    use_backend agwcom if is_agwcom
+    use_backend gamesecurity if is_gamesecurity
+    use_backend agent if is_agent
+    use_backend sso if is_sso
+    use_backend passport if is_passport
+    use_backend cloud if is_cloud
+    use_backend v4 if is_v4
+    use_backend homev5 if is_homev5
+    #白山代理API
+    use_backend apiv4baishan if is_apiv4baishan
+    use_backend yunduncom if is_yunduncom
+    #沃防云-02
+    use_backend homev5wofang_yundun_com if is_homev5wofang_yundun_com
+    #代理商公用api-02
+    use_backend apiv4agent_yundun_com if is_apiv4agent_yundun_com
+    #代理商公用用户中心-02
+    use_backend ssoagent_yundun_com if is_ssoagent_yundun_com
+    #webxury -02
+    #use_backend homev5webxury_yundun_com if is_homev5webxury_yundun_com
+    #成创-成极抗D代理
+    use_backend homev5cjkd_yundun_com if is_homev5cjkd_yundun_com
+    #寰动科技代理
+    use_backend homev5hdkj_yundun_com if is_homev5hdkj_yundun_com
+    #游侠盾代理
+    use_backend homev5yxd_yundun_com if is_homev5yxd_yundun_com
+    #666网络代理
+    #use_backend homev5666_yundun_com if is_homev5666_yundun_com
+    #卫士通代理
+    use_backend homev5wst_yundun_com if is_homev5wst_yundun_com
+    #白山代理
+    use_backend homev5baishanself_yundun_com if is_homev5baishanself_yundun_com
+    #oem
+    use_backend oem if is_oem
+    use_backend ssooem if is_ssooem
+    use_backend apiv4oem if is_apiv4oem
+
+    use_backend admin0731 if is_admin0731
+    use_backend admin if is_admin
+    use_backend ecsadmin if is_ecsadmin
+    use_backend hwws if is_hwws
+    use_backend yunduncrm if is_yunduncrm
+    use_backend adminv6 if is_adminv6
+#---------------------------------------------------------------------
+    backend apicn
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+	
+    backend yunduncn
+    mode http
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+	
+    #backend yundun
+    #mode http
+    #option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    #appsession PHPSESSID len 64 timeout 5h request-learn
+    #server WEBnode001 183.131.177.248:80 cookie 11 check inter 2000 rise 3 fall 3
+    #server WEBnode002 183.131.177.240:80 cookie 12 check inter 2000 rise 3 fall 3
+    
+    backend adminv5api
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+    
+    #test20200228
+    backend testadminv5api
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+
+    backend apiv4
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+    #白山代理API
+    backend apiv4baishan
+    mode http
+    balance roundrobin
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+    backend apicom
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+    backend agwcom
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    #server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    #server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    #server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    server WEBnode005 172.16.100.200:80  check inter 2000 rise 3 fall 3
+
+    backend gamesecurity
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 101 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 102 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 103 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 105 check inter 2000 rise 3 fall 3
+
+    backend agent
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 111 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 112 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 113 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 115 check inter 2000 rise 3 fall 3
+   
+    backend sso
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+	
+    backend passport
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 121 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 122 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 123 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 125 check inter 2000 rise 3 fall 3
+
+    backend cloud
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 131 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 132 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 133 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 135 check inter 2000 rise 3 fall 3
+
+    backend v4
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 141 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 142 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 143 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 145 check inter 2000 rise 3 fall 3
+
+    backend homev5
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 151 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 152 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 153 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 155 check inter 2000 rise 3 fall 3
+
+    backend yunduncom
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+    #沃防云-03
+    backend homev5wofang_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 161 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 162 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 163 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 165 check inter 2000 rise 3 fall 3
+
+    #代理商公用api-03
+    backend apiv4agent_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 171 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 172 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 173 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 175 check inter 2000 rise 3 fall 3
+    
+    #代理商公用用户中心-03
+    backend ssoagent_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+
+
+    #webxury -03
+    #backend homev5webxury_yundun_com
+    #mode http
+    #option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    #server WEBnode001 172.16.100.248:80 cookie 45 check inter 2000 rise 3 fall 3
+    #server WEBnode002 172.16.100.240:80 cookie 46 check inter 2000 rise 3 fall 3
+
+    #成创-成极抗D代理
+    backend homev5cjkd_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 181 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 182 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 183 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 185 check inter 2000 rise 3 fall 3
+
+    #寰动科技代理
+    backend homev5hdkj_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 191 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 192 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 193 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 195 check inter 2000 rise 3 fall 3
+
+    #游侠盾代理
+    backend homev5yxd_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 201 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 202 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 203 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 205 check inter 2000 rise 3 fall 3
+
+    #666网络代理
+    #backend homev5666_yundun_com
+    #mode http
+    #option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    #server WEBnode001 172.16.100.248:80 cookie 53 check inter 2000 rise 3 fall 3
+    #server WEBnode002 172.16.100.240:80 cookie 54 check inter 2000 rise 3 fall 3
+
+    #卫士通代理
+    backend homev5wst_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 211 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 212 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 213 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 215 check inter 2000 rise 3 fall 3
+
+    #白山代理
+    backend homev5baishanself_yundun_com
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    server WEBnode001 172.16.100.248:80 cookie 221 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 222 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 223 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 225 check inter 2000 rise 3 fall 3
+
+    #oem
+    backend oem
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 cookie 231 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 232 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 233 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 235 check inter 2000 rise 3 fall 3
+
+    backend ssooem
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    #balance roundrobin
+    server WEBnode001 172.16.100.248:80 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 check inter 2000 rise 3 fall 3
+    
+    backend apiv4oem
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    balance roundrobin
+    server WEBnode001 172.16.100.248:80 cookie 241 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 242 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 243 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 245 check inter 2000 rise 3 fall 3
+
+    backend admin0731
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 251 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 252 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 253 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 255 check inter 2000 rise 3 fall 3
+
+    backend admin
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    ###server WEBnode003 172.16.100.241:80 cookie 23 check inter 2000 rise 3 fall 3
+    ####server WEBnode004 172.16.100.250:80 cookie 24 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 23 check inter 2000 rise 3 fall 3
+    server WEBnode005 172.16.100.200:80 cookie 24 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 101 check inter 2000 rise 3 fall 3
+
+    backend ecsadmin
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 261 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 262 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 263 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 265 check inter 2000 rise 3 fall 3
+    
+    backend hwws
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 271 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 272 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 273 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 275 check inter 2000 rise 3 fall 3
+    
+    backend yunduncrm
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 281 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 282 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 283 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 285 check inter 2000 rise 3 fall 3
+
+    backend adminv6
+    mode http
+    option httpchk  HEAD /asdf/monitor.php HTTP/1.1\r\nHost:\ YUNDUN
+    appsession PHPSESSID len 64 timeout 5h request-learn
+    server WEBnode001 172.16.100.248:80 cookie 291 check inter 2000 rise 3 fall 3
+    server WEBnode002 172.16.100.240:80 cookie 292 check inter 2000 rise 3 fall 3
+    server WEBnode003 172.16.100.241:80 cookie 293 check inter 2000 rise 3 fall 3
+    #server WEBnode005 172.16.100.200:80 cookie 295 check inter 2000 rise 3 fall 3
+

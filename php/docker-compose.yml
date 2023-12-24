@@ -1,0 +1,70 @@
+version: "3"
+services:
+  php72_alpine_yd:
+    build:
+      context: ./images/alpine/
+      args:
+        IMAGE: "docker.io/php:7.2-fpm-alpine"
+        PKGS: "freetype-dev libjpeg-turbo-dev libpng-dev bzip2-dev rabbitmq-c-dev libmemcached-dev yaml-dev zlib"
+        EXT_SRC: "pdo_mysql pcntl mysqli bcmath gd sockets zip opcache bz2"
+        EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1"
+        EXT_ENABLE: "swoole amqp mongodb opcache memcache memcached redis yaml mysql xdebug"
+    image: docker.nodevops.cn/web/php:7.2-alpine-yd
+  php56_alpine_yd:
+    build:
+      context: ./images/alpine/
+      args:
+        IMAGE: "docker.io/php:5.6-fpm-alpine"
+        PKGS: "freetype-dev libjpeg-turbo-dev libpng-dev bzip2-dev rabbitmq-c-dev libmemcached-dev yaml-dev zlib"
+        EXT_SRC: "mysql pdo_mysql pcntl mysqli bcmath gd sockets zip bz2"
+        EXT_OUT: "amqp-1.10.2 swoole-2.0.11 memcache-2.2.7 memcached-2.2.0 mongodb-1.7.4 redis-4.3.0 yaml-1.3.0 xdebug-2.5.5"
+        EXT_ENABLE: "amqp swoole memcache memcached mongodb redis yaml xdebug"
+    image: docker.nodevops.cn/web/php:5.6-alpine-yd
+  php72_yd:
+    build:
+      context: ./images/centos7/
+      args:
+        PHP_VERSION: "php-7.2.33"
+        IMAGE: "docker.io/centos:7"
+        PKGS: "zip unzip libxml2 libxml2-devel openssl openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel libmcrypt-devel freetype-devel libjpeg-devel libpng-devel librabbitmq-devel libmemcached-devel libyaml-devel libbz2-devel bzip2 bzip2-devel bison bison-devel graphviz bind-utils"
+        EXT_SRC: "pdo_mysql pcntl mysqli bcmath gd sockets zip opcache bz2"
+        EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1 igbinary-3.1.5 trie_filter_master proctitle-0.1.2 mongo-1.6.16 mcrypt-1.0.3 uuid-1.1.0 apcu-5.1.18 xhprof-2.3.3-extension beast-4549b2a"
+        EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
+        ZEND_EXT_ENABLE: "opcache xdebug"
+    image: docker.nodevops.cn/web/php:7.2-yd
+  php72_ydweb:
+    build:
+      context: ./images/centos7/
+      args:
+        PHP_VERSION: "php-7.2.33"
+        IMAGE: "docker.io/centos:7"
+        PKGS: "zip unzip libxml2 libxml2-devel openssl openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel libmcrypt-devel freetype-devel libjpeg-devel libpng-devel librabbitmq-devel libmemcached-devel libyaml-devel libbz2-devel bzip2 bzip2-devel bison bison-devel graphviz bind-utils"
+        EXT_SRC: "pdo_mysql pcntl mysqli bcmath gd sockets zip opcache bz2"
+        EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1 igbinary-3.1.5 trie_filter_master proctitle-0.1.2 mongo-1.6.16 mcrypt-1.0.3 uuid-1.1.0 apcu-5.1.18 xhprof-2.3.3-extension beast-4549b2a"
+        EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
+        ZEND_EXT_ENABLE: "opcache xdebug"
+    image: docker.nodevops.cn/web/php:7.2-ydweb
+  php72_yd-beast:
+    build:
+      context: ./images/centos7/
+      args:
+        PHP_VERSION: "php-7.2.33"
+        IMAGE: "docker.io/centos:7"
+        PKGS: "zip unzip libxml2 libxml2-devel openssl openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel libmcrypt-devel freetype-devel libjpeg-devel libpng-devel librabbitmq-devel libmemcached-devel libyaml-devel libbz2-devel bzip2 bzip2-devel bison bison-devel graphviz bind-utils"
+        EXT_SRC: "pdo_mysql pcntl mysqli bcmath gd sockets zip opcache bz2"
+        EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1 igbinary-3.1.5 trie_filter_master proctitle-0.1.2 mongo-1.6.16 mcrypt-1.0.3 uuid-1.1.0 apcu-5.1.18 xhprof-2.3.3-extension beast-4549b2a"
+        EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
+        ZEND_EXT_ENABLE: "opcache xdebug"
+    image: docker.nodevops.cn/web/php:7.2-yd-beast
+  php7234_yd:
+    build:
+      context: ./images/centos7/
+      args:
+        PHP_VERSION: "php-7.2.34"
+        IMAGE: "docker.io/centos:7"
+        PKGS: "zip unzip libxml2 libxml2-devel openssl openssl-devel curl-devel libjpeg-devel libpng-devel freetype-devel libmcrypt-devel freetype-devel libjpeg-devel libpng-devel librabbitmq-devel libmemcached-devel libyaml-devel libbz2-devel bzip2 bzip2-devel bison bison-devel graphviz bind-utils"
+        EXT_SRC: "pdo_mysql pcntl mysqli bcmath gd sockets zip opcache bz2"
+        EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1 igbinary-3.1.5 trie_filter_master proctitle-0.1.2 mongo-1.6.16 mcrypt-1.0.3 uuid-1.1.0 apcu-5.1.18 xhprof-2.3.3-extension beast-4549b2a"
+        EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
+        ZEND_EXT_ENABLE: "opcache xdebug"
+    image: docker.nodevops.cn/web/php:7.2.34-yd

@@ -1,0 +1,39 @@
+docker pull gitlab/gitlab-ce:8.17.8-ce.0
+docker tag gitlab/gitlab-ce:8.17.8-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:8.17.8-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:8.17.8-ce.0
+
+docker pull gitlab/gitlab-ce:9.0.0-ce.0
+docker tag gitlab/gitlab-ce:9.0.0-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:9.0.0-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:9.0.0-ce.0
+
+docker pull gitlab/gitlab-ce:9.5.9-ce.0
+docker tag gitlab/gitlab-ce:9.5.9-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:9.5.9-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:9.5.9-ce.0
+
+docker pull gitlab/gitlab-ce:10.0.0-ce.0
+docker tag gitlab/gitlab-ce:10.0.0-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:10.0.0-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:10.0.0-ce.0
+
+docker pull gitlab/gitlab-ce:10.8.7-ce.0
+docker tag gitlab/gitlab-ce:10.8.7-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:10.8.7-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:10.8.7-ce.0
+
+docker pull gitlab/gitlab-ce:11.0.0-ce.0
+docker tag gitlab/gitlab-ce:11.0.0-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:11.0.0-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:11.0.0-ce.0
+
+docker pull gitlab/gitlab-ce:11.11.8-ce.0
+docker tag gitlab/gitlab-ce:11.11.8-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:11.11.8-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:11.11.8-ce.0
+
+docker pull gitlab/gitlab-ce:12.0.0-ce.0
+docker tag gitlab/gitlab-ce:12.0.0-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:12.0.0-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:12.0.0-ce.0
+
+docker pull gitlab/gitlab-ce:12.3.9-ce.0
+docker tag gitlab/gitlab-ce:12.3.9-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:12.3.9-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:12.3.9-ce.0
+
+docker pull gitlab/gitlab-ce:12.10.6-ce.0
+docker tag gitlab/gitlab-ce:12.10.6-ce.0 docker.nodevops.cn/gitlab/gitlab-ce:12.10.6-ce.0
+docker push docker.nodevops.cn/gitlab/gitlab-ce:12.10.6-ce.0

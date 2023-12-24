@@ -1,0 +1,94 @@
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+########################## 测试环境 开始 ##############################
+10.102.1.160 mcs.test.nodevops.cn
+10.102.1.160 agw.test.nodevops.cn
+10.102.1.160 yundun.test.nodevops.cn
+10.102.1.160 homev5.test.nodevops.cn
+10.102.1.160 tsgzapi.test.nodevops.cn
+10.102.1.160 baishan.test.nodevops.cn
+10.102.1.160 yundunv5.test.nodevops.cn
+10.102.1.160 adminv5api.test.nodevops.cn
+10.102.1.160 yundunapiv4.test.nodevops.cn
+10.102.1.160 yundunapiv5.test.nodevops.cn
+10.102.1.160 sso-backend-server.test.nodevops.cn
+
+#### 其他部门开发的服务 ##########
+148.70.155.134  adstest.ic110.cn
+183.131.177.227 spidertest.ic110.cn                 ##172.16.100.148 spidertest.ic110.cn
+172.16.100.237  spider.test.nodevops.cn
+47.100.79.160   cacheop.test.nodevops.cn
+183.131.177.227 cachain.test.nodevops.cn            ##172.16.100.238 cachain.test.nodevops.cn
+183.131.177.227 snapapi.test.nodevops.cn            ##172.16.100.238 snapapi.test.nodevops.cn
+183.131.177.227 hostscan.test.nodevops.cn           ##172.16.100.144 hostscan.test.nodevops.cn
+183.131.177.227 httpredis.test.nodevops.cn          ##172.16.100.152 httpredis.test.nodevops.cn
+183.131.177.227 monitorddos.test.nodevops.cn        ##172.16.100.145 monitorddos.test.nodevops.cn
+183.131.177.227 redis.ssl.test.nodevops.cn          ##172.16.100.148 redis.ssl.test.nodevops.cn
+183.131.177.227 apppush.test.nodevops.cn            ##172.16.100.159 apppush.test.nodevops.cn
+183.131.177.227 log.bigdata.test.nodevops.cn        ##172.16.100.52  log.bigdata.test.nodevops.cn
+
+#### 基础工具 mysql/beanstal/mongo/redis/rabbitmq/postgres ##########
+183.131.177.227 beanstalk.test.nodevops.cn          ##172.16.100.112 beanstalk.test.nodevops.cn
+183.131.177.227 mongo.test.nodevops.cn              ##172.16.100.112 mongo.test.nodevops.cn
+#10.102.1.160 redis.test.nodevops.cn              ##172.16.100.112 redis.test.nodevops.cn
+183.131.177.227  redis.test.nodevops.cn              ##172.16.100.112 redis.test.nodevops.cn
+183.131.177.227 mysql.test.nodevops.cn              ##172.16.100.112 mysql.test.nodevops.cn
+183.131.177.227 rabbitmq.test.nodevops.cn           ##172.16.100.188 rabbitmq.test.nodevops.cn
+183.131.177.227 rabbitmq_direct.test.nodevops.cn    ##172.16.100.116 rabbitmq_direct.test.nodevops.cn
+10.102.1.160 postgresql.test.nodevops.cn         ##172.16.100.112 postgresql.test.nodevops.cn
+183.131.177.227 redis_ngxinc.test.nodevops.cn       ##172.16.100.126 redis_ngxinc.test.nodevops.cn
+183.131.177.227 clickhousebill.test.nodevops.cn     ##172.16.100.139 clickhousebill.test.nodevops.cn
+183.131.177.227 nsqd.test.nodevops.cn     ##172.16.100.112 nsqd.test.nodevops.cn
+
+######### kong 代理的项目 #############
+10.102.1.160 service_cdn.test.nodevops.cn
+10.102.1.160 dns_check.test.nodevops.cn
+10.102.1.160 ads..test.nodevops.cn
+10.102.1.160 service_oplog.test.nodevops.cn
+10.102.1.160 service_batch.test.nodevops.cn
+10.102.1.160 service_dns.test.nodevops.cn
+10.102.1.160 service_notify.test.nodevops.cn
+10.102.1.160 service_disp.test.nodevops.cn
+10.102.1.160 service_asset.test.nodevops.cn
+10.102.1.160 service_tag.test.nodevops.cn
+10.102.1.160 apiv4.test.nodevops.cn
+
+######### 非中台系统 #############
+183.131.177.227 dataapi.test.nodevops.cn            ##172.16.100.52 dataapi.test.nodevops.cn
+
+######### baishanone测试调试用 ############
+10.102.1.160 sdwkz.baishancloud.com
+10.102.1.160 apiv4baishan.yundun.com
+10.102.1.160 homev5baishanself.yundun.com
+10.102.1.160 yundun-api.console.baishan.com
+
+127.0.0.1 sdwan-api.console.baishan.com
+127.0.0.1 tianzhu-api.console.baishan.com
+127.0.0.1 sdwan-old-api.console.baishan.com
+127.0.0.1 sdwan-old-api.bak.console.baishan.com
+10.102.1.160 sdns-api.console.baishan.com
+
+####-------------------大数据相关的hosts-------------------------------------
+183.131.177.227 elastic01.yundun.com            ##172.16.100.44 elastic01.yundun.com
+183.131.177.227 elastic02.yundun.com            ##172.16.100.52 elastic02.yundun.com
+183.131.177.227 clickhouse.yundun.com           ##172.16.100.45 clickhouse.yundun.com
+183.131.177.227 clickhousebill.yundun.com       ##172.16.100.45 clickhousebill.yundun.com
+183.131.177.227 kafka001.yundun.com             ##172.16.100.11 kafka001.yundun.com
+183.131.177.227 kafka002.yundun.com             ##172.16.100.12 kafka002.yundun.com
+183.131.177.227 kafka003.yundun.com             ##172.16.100.13 kafka003.yundun.com
+183.131.177.227 kafka004.yundun.com             ##172.16.100.60 kafka004.yundun.com
+183.131.177.227 kafka005.yundun.com             ##172.16.100.43 kafka005.yundun.com
+183.131.177.227 kafka006.yundun.com             ##172.16.100.42 kafka006.yundun.com
+183.131.177.227 kafka007.yundun.com             ##172.16.100.51 kafka007.yundun.com
+183.131.177.227 dataapi.yundun.com              ##172.16.100.52 dataapi.yundun.com
+183.131.177.227 log.bigdata.yundun.com          ##172.16.100.52 log.bigdata.yundun.com
+
+### 其他 ###
+61.153.111.183 whois.nic.xyz
+61.153.111.183 whois.nic.pw
+58.222.58.62 account.console.baishan.com
+183.131.177.227 testzt.090112.xyz           ##172.16.100.159
+########################## 测试环境 结束 ##############################
+

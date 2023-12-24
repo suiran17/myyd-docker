@@ -1,0 +1,14 @@
+{
+  "debug": false,
+  "experimental": false,
+  "insecure-registries": [ "docker.nodevops.cn"],
+  "registry-mirrors": [
+    "https://dockerhub.azk8s.cn",
+    "https://reg-mirror.qiniu.com"
+  ],
+  "dns": [
+    "172.16.100.115",
+    "114.114.114.114",
+    "8.8.8.8"
+  ]
+}

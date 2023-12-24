@@ -1,0 +1,83 @@
+#!/bin/bash
+
+act=$1
+
+mysqlPhpAuth="-h mysql.test.nodevops.cn -uphp -pku5Ne(szK4"
+mysqlBakAuth="-h mysql.test.nodevops.cn -uphp -pku5Ne(szK4"
+pgAuth="-h 172.16.100.188 -p 5432 -U postgres"
+function mysqlLogin  { auth=$1; dbName=$2; mysql     ${auth} ${dbName}; }
+function mysqlDump   { auth=$1; dbName=$2; mysqldump ${auth} ${dbName} > dump_${dbName}.sql; }
+function mysqlImport { auth=$1; dbName=$2; mysql     ${auth} ${dbName} < dump_${dbName}.sql; }
+function pgLogin     { auth=$1; dbName=$2; docker run -it postgres:11.2-alpine psql    ${pgAuth}     ${dbName};                      }
+function pgDump      { auth=$1; dbName=$2; docker run -it postgres:11.2-alpine pg_dump ${pgAuth}     ${dbName} > dump_${dbName}.sql; }
+function pgImport    { auth=$1; dbName=$2; psql    ${pgAuth} bak_${dbName} < dump_${dbName}.sql; }
+
+
+if   [ "${act}" == "login_cp"       ];   then mysqlLogin "${mysqlPhpAuth}" yundun_cp
+elif [ "${act}" == "login_v4"       ];   then mysqlLogin "${mysqlPhpAuth}" yundun_cp_v4
+elif [ "${act}" == "login_cp_v4"    ];   then mysqlLogin "${mysqlPhpAuth}" yundun_cp_v4
+elif [ "${act}" == "login_dns"      ];   then mysqlLogin "${mysqlPhpAuth}" yundun_dns
+elif [ "${act}" == "login_v5"       ];   then mysqlLogin "${mysqlPhpAuth}" yundun_admin_v5
+elif [ "${act}" == "login_admin_v5" ];   then mysqlLogin "${mysqlPhpAuth}" yundun_admin_v5
+elif [ "${act}" == "login_api"      ];   then mysqlLogin "${mysqlPhpAuth}" yundun_api
+elif [ "${act}" == "login_rbac"     ];   then mysqlLogin "${mysqlPhpAuth}" yundun_rbac
+elif [ "${act}" == "login_cos"      ];   then mysqlLogin "${mysqlPhpAuth}" cos
+elif [ "${act}" == "login_tag"      ];   then mysqlLogin "${mysqlPhpAuth}" tag
+elif [ "${act}" == "login_mcs"      ];   then mysqlLogin "${mysqlPhpAuth}" mcs
+elif [ "${act}" == "login_asset"    ];   then mysqlLogin "${mysqlPhpAuth}" asset
+elif [ "${act}" == "login_sso"      ];   then mysqlLogin "${mysqlPhpAuth}" yundun_sso
+elif [ "${act}" == "login_tsgz"     ];   then mysqlLogin "${mysqlPhpAuth}" yundun_tsgz
+elif [ "${act}" == "login_kong"     ];   then pgLogin "${pgAuth}" kong
+elif [ "${act}" == "login_konga"    ];   then pgLogin "${pgAuth}" konga
+elif [ "${act}" == "login_kongpre"  ];   then pgLogin "${pgAuth}" kongpre
+elif [ "${act}" == "login_kongapre" ];   then pgLogin "${pgAuth}" kongapre
+
+
+elif [ "${act}" == "dump"           ];   then mysqlDump  "${mysqlPhpAuth}" yundun_cp
+elif [ "${act}" == "dump_cp"        ];   then mysqlDump  "${mysqlPhpAuth}" yundun_cp
+elif [ "${act}" == "dump_v4"        ];   then mysqlDump  "${mysqlPhpAuth}" yundun_cp_v4
+elif [ "${act}" == "dump_cp_v4"     ];   then mysqlDump  "${mysqlPhpAuth}" yundun_cp_v4
+elif [ "${act}" == "dump_dns"       ];   then mysqlDump  "${mysqlPhpAuth}" yundun_dns
+elif [ "${act}" == "dump_v5"        ];   then mysqlDump  "${mysqlPhpAuth}" yundun_admin_v5
+elif [ "${act}" == "dump_admin_v5"  ];   then mysqlDump  "${mysqlPhpAuth}" yundun_admin_v5
+elif [ "${act}" == "dump_api"       ];   then mysqlDump  "${mysqlPhpAuth}" yundun_api
+elif [ "${act}" == "dump_sso"       ];   then mysqlDump  "${mysqlPhpAuth}" yundun_sso
+elif [ "${act}" == "dump_rbac"      ];   then mysqlDump  "${mysqlPhpAuth}" yundun_rbac
+elif [ "${act}" == "dump_tsgz"      ];   then mysqlDump  "${mysqlPhpAuth}" yundun_tsgz
+elif [ "${act}" == "dump_cos"       ];   then mysqlDump  "${mysqlPhpAuth}" cos
+elif [ "${act}" == "dump_tag"       ];   then mysqlDump  "${mysqlPhpAuth}" tag
+elif [ "${act}" == "dump_mcs"       ];   then mysqlDump  "${mysqlPhpAuth}" mcs
+elif [ "${act}" == "dump_asset"     ];   then mysqlDump  "${mysqlPhpAuth}" asset
+elif [ "${act}" == "dump_kong"      ];   then pgDump "${pgAuth}" kong
+elif [ "${act}" == "dump_konga"     ];   then pgDump "${pgAuth}" konga
+elif [ "${act}" == "dump_kongpre"   ];   then pgDump "${pgAuth}" kongpre
+elif [ "${act}" == "dump_kongapre"  ];   then pgDump "${pgAuth}" kongapre
+
+elif [ "${act}" == "import"          ];   then mysqlImport  "${mysqlBakAuth}" yundun_cp
+elif [ "${act}" == "import_cp"       ];   then mysqlImport  "${mysqlBakAuth}" yundun_cp
+elif [ "${act}" == "import_v4"       ];   then mysqlImport  "${mysqlBakAuth}" yundun_cp_v4
+elif [ "${act}" == "import_cp_v4"    ];   then mysqlImport  "${mysqlBakAuth}" yundun_cp_v4
+elif [ "${act}" == "import_dns"      ];   then mysqlImport  "${mysqlBakAuth}" yundun_dns
+elif [ "${act}" == "import_v5"       ];   then mysqlImport  "${mysqlBakAuth}" yundun_admin_v5
+elif [ "${act}" == "import_admin_v5" ];   then mysqlImport  "${mysqlBakAuth}" yundun_admin_v5
+elif [ "${act}" == "import_api"      ];   then mysqlImport  "${mysqlBakAuth}" yundun_api
+elif [ "${act}" == "import_sso"      ];   then mysqlImport  "${mysqlBakAuth}" yundun_sso
+elif [ "${act}" == "import_rbac"     ];   then mysqlImport  "${mysqlBakAuth}" yundun_rbac
+elif [ "${act}" == "import_tsgz"     ];   then mysqlImport  "${mysqlBakAuth}" yundun_tsgz
+elif [ "${act}" == "import_cos"      ];   then mysqlImport  "${mysqlBakAuth}" cos
+elif [ "${act}" == "import_tag"      ];   then mysqlImport  "${mysqlBakAuth}" tag
+elif [ "${act}" == "import_mcs"      ];   then mysqlImport  "${mysqlBakAuth}" mcs
+elif [ "${act}" == "import_asset"    ];   then mysqlImport  "${mysqlBakAuth}" asset
+elif [ "${act}" == "import_kong"     ];   then pgImport "${pgAuth}" kong
+elif [ "${act}" == "import_konga"    ];   then pgImport "${pgAuth}" konga
+elif [ "${act}" == "import_kongpre"  ];   then pgImport "${pgAuth}" kongpre
+elif [ "${act}" == "import_kongapre" ];   then pgImport "${pgAuth}" kongapre
+
+elif [ "${act}" == "redis_188"  ];   then redis-cli --raw -h 172.16.100.188 -p 6379 -a AYpONe5EUXnY
+elif [ "${act}" == "redis_39"   ];   then redis-cli --raw -h 172.16.100.39 -p 62340 -a AYpONe5EUXnY -n 7
+elif [ "${act}" == "redis_248"  ];   then redis-cli --raw -h 172.18.35.248 -p 6379
+elif [ "${act}" == "mongo_disp" ];   then mongo mongodb://test:test@172.16.100.168
+
+else
+    echo "database is not exists"
+fi

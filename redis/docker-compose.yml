@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  redis5:
+    build:
+      context: ./images/redis5/
+    image: docker.nodevops.cn/web/redis:5_yd
+  redis6:
+    build:
+      context: ./images/redis6.0.4/
+    image: docker.nodevops.cn/web/redis:6.0.4_yd

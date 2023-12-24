@@ -1,0 +1,103 @@
+---
+version: '3.7'
+networks:
+    default:
+        driver: bridge
+        ipam:
+            config:
+                - subnet:   172.1.0.1/24
+services:
+   #nginx:
+   #    container_name: nginx
+   #    image: docker.nodevops.cn/web/nginx:1.19-alpine-yd
+   #    ports:
+   #        - 80:80
+   #        - 443:443
+   #    volumes:
+   #        - /data/www:/www/:rw
+   #        - ./nginx/ssl:/ssl:rw
+   #        - ./nginx/conf.d:/etc/nginx/conf.d/:rw
+   #        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+   #        - /data/docker/nginx/log:/var/log/nginx/:rw
+   #    environment:
+   #        TZ: Asia/Shanghai
+   #    restart: always
+    amqproxy26:
+        container_name: amqproxy26
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.26:5683:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.121:5670
+        #command: /app/bin/amqproxy
+        restart: always
+    amqproxy27:
+        container_name: amqproxy27
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.27:5683:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.121:5670
+        #command: /app/bin/amqproxy
+        restart: always
+
+    amqproxy260:
+        container_name: amqproxy260
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.26:5680:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.26:5670
+        #command: /app/bin/amqproxy
+        restart: always
+    amqproxy261:
+        container_name: amqproxy261
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.26:5681:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.26:5671
+        #command: /app/bin/amqproxy
+        restart: always
+    amqproxy270:
+        container_name: amqproxy270
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.27:5680:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.27:5670
+        #command: /app/bin/amqproxy
+        restart: always
+    amqproxy271:
+        container_name: amqproxy271
+        image: docker.nodevops.cn/web/amqproxy:0.1.0
+        ports:
+          - 172.16.100.27:5681:5673
+        volumes:
+            - /data/docker/amqproxy/tmp:/tmp
+        environment:
+            LISTEN_ADDRESS: 0.0.0.0
+            LISTEN_PORT: 5673
+            AMQP_URL: amqp://172.16.100.27:5671
+        #command: /app/bin/amqproxy
+        restart: always

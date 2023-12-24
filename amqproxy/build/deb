@@ -1,0 +1,79 @@
+#!/bin/bash
+set -eu
+which dpkg-deb > /dev/null || (echo "dpkg-deb required"; exit 1)
+which fakeroot > /dev/null || (echo "fakeroot required"; exit 1)
+which help2man > /dev/null || (echo "help2man required"; exit 1)
+pkg_version=${1:-$(shards version)}
+pkg_revision=${2:-1}
+root=builds/debian/$(lsb_release -cs)/amqproxy_${pkg_version}-${pkg_revision}_$(dpkg --print-architecture)
+
+shards build --release --production
+
+rm -rf $root
+mkdir -p $root/DEBIAN
+mkdir -p $root/usr/bin
+mkdir -p $root/lib/systemd/system
+mkdir -p $root/usr/share/doc/amqproxy
+mkdir -p $root/usr/share/man/man1
+cp bin/amqproxy $root/usr/bin
+#strip --strip-unneeded --remove-section=.comment --remove-section=.note $root/usr/bin/*
+cp extras/amqproxy.service $root/lib/systemd/system
+cp README.md $root/usr/share/doc/amqproxy/README
+cat > $root/usr/share/doc/amqproxy/changelog.Debian << EOF
+amqproxy ($pkg_version-$pkg_revision) whatever; urgency=medium
+
+  * New upstream release.
+
+ -- CloudAMQP Team <contact@cloudamqp.com>  Wed, 17 Apr 2019 18:01:24 +0000
+EOF
+gzip -9 -n $root/usr/share/doc/amqproxy/changelog.Debian
+cat > $root/usr/share/doc/amqproxy/copyright << EOF
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: AMQProxy
+Upstream-Contact: support@cloudamqp.com
+Source: https://github.com/cloudamqp/amqproxy
+
+Files: *
+Copyright: 2019, 84codes AB
+License: MIT
+EOF
+help2man -Nn "connection pool for AMQP connections" bin/amqproxy > $root/usr/share/man/man1/amqproxy.1
+gzip -9 -n $root/usr/share/man/man1/amqproxy.1
+
+cd $root
+find . -type f -not -path "./DEBIAN/*" | xargs md5sum > DEBIAN/md5sums
+cd - > /dev/null
+
+cat > $root/DEBIAN/control << EOF
+Package: amqproxy
+Version: $pkg_version-$pkg_revision
+Homepage: https://github.com/cloudamqp/amqproxy
+Section: net
+Priority: optional
+Architecture: $(dpkg --print-architecture)
+Depends: openssl, systemd, libc6
+Installed-Size: $(du -ks $root/usr | cut -f 1)
+Maintainer: CloudAMQP Team <contact@cloudamqp.com>
+Description: connection pool for AMQP connections
+ Reuses connections and channels to an upstream
+ AMQP server.
+EOF
+
+cat > $root/DEBIAN/postinst << EOF
+#!/bin/sh -e
+deb-systemd-helper enable amqproxy.service
+deb-systemd-invoke start amqproxy.service
+EOF
+chmod +x $root/DEBIAN/postinst
+
+cat > $root/DEBIAN/prerm << EOF
+#!/bin/sh -e
+deb-systemd-invoke stop amqproxy.service
+deb-systemd-helper purge amqproxy.service
+EOF
+chmod +x $root/DEBIAN/prerm
+
+fakeroot dpkg-deb --build $root
+rm -r $root
+
+lintian $root.deb || true

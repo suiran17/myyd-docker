@@ -1,0 +1,21 @@
+version: "3"
+
+services: 
+ rabbitmq:
+  image: rabbitmq:3.8.11-management
+  hostname: rabbits
+  container_name: y_rabbitmq
+  restart: always
+  privileged: true
+  ports:
+    - "16670:15672"
+    - "6670:5672"
+  environment:
+    RABBITMQ_DEFAULT_USER: tester
+    RABBITMQ_DEFAULT_PASS: tester
+    RABBITMQ_LOGS:
+    RABBITMQ_LOG_BASE: /var/log/rabbitmq
+  volumes:
+   - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+   - /etc/timezone:/etc/timezone:ro
+   - ./rabbitmq/data:/var/lib/rabbitmq

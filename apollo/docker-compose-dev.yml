@@ -1,0 +1,30 @@
+---
+version: '3.7'
+networks:
+  apollo_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet:   172.17.0.0/24
+services:
+  config_dev:
+    image: docker.io/jingwu/apollo_config_dev:v0.0.6
+    ports:
+        - 172.16.100.188:10011:10001
+        - 172.16.100.188:10012:10002
+    networks:
+      - apollo_net
+  config_fat:
+    image: docker.io/jingwu/apollo_config_fat:v0.0.6
+    ports:
+        - 172.16.100.188:10021:10001
+        - 172.16.100.188:10022:10002
+    networks:
+      - apollo_net
+  config_lpt:
+    image: docker.io/jingwu/apollo_config_lpt:v0.0.6
+    ports:
+        - 172.16.100.188:10031:10001
+        - 172.16.100.188:10032:10002
+    networks:
+      - apollo_net

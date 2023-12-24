@@ -1,0 +1,16 @@
+---
+version: '3.7'
+services:
+  konga0.14.7_yd:
+    image: docker.nodevops.cn/web/konga:0.14.7_yd
+    build:
+      context: ./images/
+      args:
+        IMAGE: docker.io/pantsel/konga:0.14.7
+  konga0.14.9_yd:
+    image: docker.nodevops.cn/web/konga:0.14.9_yd
+    build:
+      context: ./images/
+      args:
+        IMAGE: docker.io/pantsel/konga:0.14.9
+

@@ -1,0 +1,10 @@
+apollo_dev/admin/*
+apollo_dev/config/*
+apollo_dev/portal/*
+
+logs/nginx/*
+!logs/nginx/.gitkeep
+
+logs/php/*
+!logs/php/.gitkeep
+

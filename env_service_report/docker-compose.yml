@@ -1,0 +1,32 @@
+version: "3"
+services:
+  service_report:
+i    container_name: service_report
+    volumes:
+      - /data/www/service_report/:/www/
+      - /data/static/:/static/
+    image: harbor-jh.bs58i.baishancdnx.com/safe_biz/report:0.2.3
+    command: /bin/bash /www/start_test.sh
+    extra_hosts:                        # 设置容器 hosts
+      - "beanstalk.test.nodevops.cn:172.18.153.33"
+      - "mysql.test.nodevops.cn:172.18.153.33"
+      # - "beanstalk.yundun.com:172.18.153.33"
+      # - "mariadb.yundun.com:172.18.153.202"
+      # - "mariadb.yundun.com:172.18.153.202"
+    ##网络配置必须为host
+    network_mode: "host"
+  nginx:
+    container_name: server_report_nginx
+    image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
+    ports:
+       - 80:80
+       - 443:443
+    volumes:
+       -  /data/static/:/www/:rw
+       - ./nginx/ssl:/ssl:rw
+       - ./nginx/conf.d:/etc/nginx/conf.d/:rw
+       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+       - ./nginx/log:/var/log/nginx/:rw 
+    environment:
+       TZ: Asia/Shanghai
+    restart: always

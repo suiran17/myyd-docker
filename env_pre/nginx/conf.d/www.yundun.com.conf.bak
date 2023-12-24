@@ -1,0 +1,65 @@
+server {
+    resolver 223.5.5.5;
+    listen       80;
+
+	  #server_name www.yundun.com yundun.com *.yundun.com ;
+	  server_name www.yundun.cn yundun.cn *.yundun.cn www.yundun.com yundun.com *.yundun.com ;
+	  index index.html index.htm default.html default.htm index.php default.php;
+    root /usr/local/nginx-1.8.1/html/www.yundun.com/home-v3/WebRoot/Home;
+
+	  location / {
+        #try_files $uri $uri/ /index.php?s=$uri&$args;
+		    try_files $uri @router;
+    }
+
+    if ($host  != 'www.yundun.com' ) {
+        return 301 http://www.yundun.com$request_uri;
+    }
+
+	  location @router {
+        rewrite ^/(.+)$ /index.php?_route_=$1 last;
+	  }
+
+    location ~ \.php$ {
+        fastcgi_pass php:9000;
+
+		    #使用socket方式
+        #fastcgi_pass unix:/dev/shm/php-cgi.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+ 
+        proxy_set_header X-Real-IP $remote_addr; 
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+
+	  location ~^/fpm-status$ {
+        fastcgi_pass php:9000;
+	  	  #使用socket方式
+        #fastcgi_pass unix:/dev/shm/php-cgi.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+	  }
+
+	  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$ {
+	  		expires      30d;
+	  }
+
+	  location ~ .*\.(js|css)?$ {
+			  expires      12h;
+		}
+
+	  #反代样例
+    location ~ /domains {
+        proxy_pass http://172.16.100.249:8080;
+    }
+
+    location ~ /dns_scan {
+        proxy_pass http://183.131.177.249:9506;
+    }
+
+    access_log /var/log/nginx/www.yundun.com.access.log main;
+    error_log  /var/log/nginx/www.yundun.com.error.log;
+}

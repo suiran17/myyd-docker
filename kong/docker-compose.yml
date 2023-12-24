@@ -1,0 +1,38 @@
+---
+version: '3.7'
+services:
+  kong_yd:
+    container_name: kong_yd
+    image: docker.nodevops.cn/web/kong_yd:1.3.1
+    build:
+      context: ./images/1.3.1-alpine
+      args:
+        IMAGE: kong:1.3.1-alpine
+  kong21_yd:
+    container_name: kong21_yd
+    image: docker.nodevops.cn/web/kong_yd:2.1.0
+    build:
+      context: ./images/2.1.0-alpine/
+      args:
+        IMAGE: kong:2.1.0-alpine
+  kong1.3.1_yd:
+    container_name: kong1.3.1_yd
+    image: docker.nodevops.cn/web/kong:1.3.1_yd
+    build:
+      context: ./images/1.3.1-alpine/
+      args:
+        IMAGE: kong:1.3.1-alpine
+  kong2.1.0_yd:
+    container_name: kong2.1.0_yd
+    image: docker.nodevops.cn/web/kong:2.1.0_yd
+    build:
+      context: ./images/2.1.0-alpine/
+      args:
+        IMAGE: kong:2.1.0-alpine
+  kong2.1_c7_yd:
+    container_name: kong2.1_c7_yd
+    image: docker.nodevops.cn/web/kong:2.1_c7_yd
+    build:
+      context: ./images/2.1-centos/
+      args:
+        IMAGE: kong:2.1-centos

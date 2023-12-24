@@ -1,0 +1,12 @@
+---
+version: '3.7'
+services:
+    postgres:
+        container_name: postgres
+        image: docker.nodevops.cn/web/postgres:11_yd
+        ports:
+            - 5432:5432
+        volumes:
+            - /data/docker/postgres/data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: c99ee26a6727380311dae5431e348b76

@@ -1,0 +1,10 @@
+/doc/
+/lib/
+/bin/
+/.shards/
+/.vagrant/
+*.log
+*.deb
+*.tar.gz
+*.swp
+/builds/

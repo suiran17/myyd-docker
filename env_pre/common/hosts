@@ -1,0 +1,77 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+#42.120.20.34 pmp.yundun.cn
+121.40.37.125 pmp.yundun.cn
+
+172.16.100.242 api.yundun.cn
+172.16.100.242 api.yundun.com
+#172.16.100.242 www.yundun.com
+172.16.100.242 v4.yundun.com
+172.16.100.242 apiv4.yundun.com
+172.16.100.241 redis.yundun.com
+172.16.100.241 memcache.yundun.com
+127.0.0.1 memcache249.yundun.com
+172.16.100.26 beanstalk.yundun.com
+172.16.100.26 beanstalklog250.yundun.com
+172.16.100.242 mariadb.yundun.com
+172.16.100.245 homev4cli2dnsdb.yundun.com
+172.16.100.44 elastic01.yundun.com
+172.16.100.52 elastic02.yundun.com
+
+61.153.111.183 whois.nic.xyz
+61.153.111.183 whois.nic.pw
+
+114.55.251.13 zabbix.adminv5.com
+
+#脚���机调adminv5api机器
+172.16.100.242 adminv5api.yundun.com
+#172.16.100.87 api.mcs.com
+47.98.60.6  api.mcs.com
+
+#20190115
+172.16.100.42 clickhouse.yundun.com
+#httpredis接口  杜一凡临时20190125
+47.111.24.173  redisapi.yundun.com
+#丁兆鹏扫备案host
+180.97.220.196 web.ding.yundun.com
+172.16.100.119 git.nodevops.cn
+#20190916
+172.16.100.242 agw.yundun.com
+#
+172.16.100.11 kafka001.yundun.com
+172.16.100.12 kafka002.yundun.com
+172.16.100.13 kafka003.yundun.com
+172.16.100.60  kafka004.yundun.com
+172.16.100.43  kafka005.yundun.com
+172.16.100.42  kafka006.yundun.com
+172.16.100.51  kafka007.yundun.com
+#扫备案 杜一凡
+180.97.220.196  beian.ic110.cn
+#20200602
+##172.16.100.242 rabbitmq.yundun.com
+172.16.100.26 rabbitmq.yundun.com
+## 大数据 李杰
+172.16.100.52   dataapi.yundun.com
+172.16.100.139  clickhousebill.yundun.com
+## 蜘蛛，风险检测，镜像  李想
+172.16.100.230  spider.yundun.com
+## 镜像容量更新
+222.186.55.41  snapapi.yundun.com
+## 证书链补���   高力
+39.98.44.132    cachain.yundun.com
+## 缓存清理，预热   高力
+#47.100.79.160   cacheop.yundun.com
+1.117.215.153    cacheop.yundun.com
+## app数据推送 高力
+47.96.49.211    apppush.yundun.com
+## 主机扫描 李想
+172.16.100.144  hostscan.yundun.com
+## ddos监控 高力
+172.16.100.145  monitorddos.yundun.com
+## redis sentinel master节点
+172.16.100.26 redis6379_sentimaster.yundun.com
+172.16.100.26 redissenti_26379.yundun.com
+172.16.100.26 redissenti_26380.yundun.com
+172.16.100.26 redissenti_26381.yundun.com
+
+172.16.100.200 mongo.devinnercall.cn

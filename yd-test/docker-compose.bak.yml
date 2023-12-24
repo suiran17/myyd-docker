@@ -1,0 +1,433 @@
+---
+version: '3.7'
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet:   172.1.0.1/24
+# volumes:
+#   pg_data:
+#     name: pg_data
+#     driver: local
+#   #sentinel
+#   ydredis_data_6379:
+#     name: ydredis_data_6379
+#     driver: local
+#   ydredis_data_6380:
+#     name: ydredis_data_6380
+#     driver: local
+#   ydredis_data_6381:
+#     name: ydredis_data_6381
+#     driver: local
+#   dns_redis_data_7379:
+#     name: dns_redis_data_7379
+#     driver: local
+
+services:
+  ## cache
+  # memcached:
+  #   container_name: memcached
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/memcached:alpine
+  #   ports:
+  #     - 11211:11211
+  #   restart: always
+  # beanstalkd:
+  #   container_name: beanstalkd
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/yd-beanstalkd:v1.0
+  #   ports:
+  #     - 11300:11300
+  #   volumes:
+  #     - /data/docker/beanstalkd:/var/lib/beanstalkd
+  #   command: -z 655350 -b /var/lib/beanstalkd/ -F
+  #   restart: always
+  # mongo:
+  #   container_name: mongo
+  #   #image: harbor-jh.bs58i.baishancdnx.com/safe_biz/mongo
+  #   image: docker.nodevops.cn/web/mongo:4.4
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: admin
+  #     MONGO_INITDB_ROOT_PASSWORD: admin
+  #   volumes:
+  #     - ./mongo/mongod.conf:/etc/mongod.conf
+  #     - /data/docker/mongo:/data/db
+  #   #command: --serviceExecutor adaptive --config /etc/mongo/mongod.conf
+  #   restart: always
+  # mongo-express:
+  #   container_name: mongo-express
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/mongo-express
+  #   ports:
+  #     - 8082:8081
+  #   restart: always
+  #   environment:
+  #     ME_CONFIG_OPTIONS_EDITORTHEME: ambiance
+  #     ME_CONFIG_MONGODB_SERVER: mongo
+  #     ME_CONFIG_BASICAUTH_USERNAME: admin
+  #     ME_CONFIG_BASICAUTH_PASSWORD: admin
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+  #   volumes:
+  #     - ./mongo/config.js:/node_modules/mongo-express/config.js
+  #   links:
+  #     - mongo
+  # kong:
+  #   container_name: kong
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/kong:2.1_c7_yd
+  #   ports:
+  #     - 8000:8000
+  #     - 8001:8001
+  #     - 8443:8443
+  #     - 8444:8444
+  #   volumes:
+  #     - /etc/hosts:/etc/hosts
+  #     - ./kong/:/etc/kong/
+  #     - /data/docker/kong/logs:/usr/local/kong/logs
+  #   command: /etc/kong/script/start.sh
+  # konga:
+  #   container_name: konga
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/konga:0.14.7_yd
+  #   ports:
+  #     - 1337:1337
+  #   env_file:
+  #     - ./konga/konga.env
+  #   volumes:
+  #     - /etc/hosts:/etc/hosts
+  # ## 容器管理
+  # portainer:
+  #   container_name: portainer
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/portainer
+  #   ports:
+  #     - 9005:9000
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:cached
+  #     - /data/docker/portainer/:/data:cached
+  #   restart: always
+  # postgres:
+  #   container_name: postgres
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/postgres:11_yd
+  #   ports:
+  #       - 5432:5432
+  #   volumes:
+  #       - /etc/hosts:/etc/hosts
+  #       - /data/docker/postgres/data:/var/lib/postgresql/data
+  #   environment:
+  #       POSTGRES_PASSWORD: dbadmin
+  # mysql:
+    # container_name: mysql
+    # image: docker.io/mariadb:10.0
+    # ports:
+    #   - 3306:3306
+    # volumes:
+    #   - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    #   - /data/docker/mysql:/var/lib/mysql
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: dbadmin
+    #   TZ: Asia/Shanghai
+    # restart: always
+  php:
+    container_name: php
+    # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/php:7.2-yd
+    image: tokyo.tk93.top:2080/yundun/php:7.2-ydweb
+    volumes:
+      - ./hosts:/etc/hosts
+      - ${PHP_CODE_DIR}:/www/:rw
+      - ${PHP_CODE_DIR}/tmp:/tmp/:rw
+      - ./phpc7/script:/root/script
+      - ./phpc7/php.d:/usr/local/php/etc/php.d:ro
+      - ./phpc7/php.ini:/usr/local/php/etc/php.ini:ro
+      - ./phpc7/php-fpm.conf:/usr/local/php/etc/php-fpm.conf:rw
+      - ./phpc7/php-fpm.d:/usr/local/php/etc/php-fpm.d
+      - /data/docker/php/log:/var/log/php:rw
+    environment:
+      APPLICATION_ENV: test
+    command: /root/script/start_phpfpm.sh
+    restart: always
+  # phpscript:
+  #   container_name: phpscript
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/php:7.2-yd
+  #   volumes:
+  #     - /etc/hosts:/etc/hosts
+  #     - /data/www:/www/:rw
+  #     - /data/www/tmp:/tmp/:rw
+  #     - ./phpc7/script:/root/script
+  #     - ./phpc7/php.d:/usr/local/php/etc/php.d:ro
+  #     - ./phpc7/php.ini:/usr/local/php/etc/php.ini:ro
+  #     - ./phpc7/php-fpm.conf:/usr/local/php/etc/php-fpm.conf:rw
+  #     - ./phpc7/php-fpm.d:/usr/local/php/etc/php-fpm.d
+  #     - /data/docker/php/log:/var/log/php:rw
+  #   environment:
+  #     APPLICATION_ENV: test
+  #   command: /root/script/crontab_processd.sh
+  #   restart: always
+  nginx:
+    container_name: nginx
+    # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
+    image: tokyo.tk93.top:2080/yundun/nginx:1.19-alpine-yd
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./hosts:/etc/hosts
+      - ${PHP_CODE_DIR}:/www/:rw
+      # - ${PHP_CODE_DIR}/tmp:/tmp/:rw
+      - ./nginx/ssl:/ssl:rw
+      - ./nginx/conf.d:/etc/nginx/conf.d/:rw
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /data/docker/nginx/log:/var/log/nginx/:rw
+    environment:
+      TZ: Asia/Shanghai
+    restart: always
+
+  # nginx_tcp:
+  #   container_name: nginx_tcp
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
+  #   ports:
+  #     - 9999:9999
+  #     - 9988:9988
+  #   volumes:
+  #     - /etc/hosts:/etc/hosts
+  #     - /data/www:/www/:rw
+  #     - ./nginx_tcp/conf.d:/etc/nginx/conf.d/:rw
+  #     - ./nginx_tcp/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - /data/docker/nginx_tcp/log:/var/log/nginx/:rw
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #   restart: always
+  # apollo_config_dev:
+  #   container_name: apollo_config_dev
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/apollo_build:0.1.0
+  #   volumes:
+  #     - ./apollo_dev/:/apollo/
+  #   environment:
+  #     CONFIG_DIR: /apollo/config
+  #     CONFIG_SERVER_HOST: 172.16.100.112
+  #     CONFIG_SERVER_PORT: 10011
+  #     CONFIG_LOG_FOLDER: /opt/logs/100003173/
+  #     CONFIG_DB_HOST: mysql.test.nodevops.cn
+  #     CONFIG_DB_PORT: 3306
+  #     CONFIG_DB_NAME: apollo_config_dev
+  #     CONFIG_DB_USER: php
+  #     CONFIG_DB_PASSWORD: ku5Ne(szK4
+  #   command: sh /apollo/config_start.sh
+  #   restart: always
+  #   network_mode: "host"
+  # apollo_admin_dev:
+  #   container_name: apollo_admin_dev
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/apollo_build:0.1.0
+  #   volumes:
+  #     - ./apollo_dev/:/apollo/
+  #   environment:
+  #     ADMIN_DIR: /apollo/admin
+  #     ADMIN_SERVER_HOST: 172.16.100.112
+  #     ADMIN_SERVER_PORT: 10012
+  #     CONFIG_DB_HOST: mysql.test.nodevops.cn
+  #     CONFIG_DB_PORT: 3306
+  #     CONFIG_DB_NAME: apollo_config_dev
+  #     CONFIG_DB_USER: php
+  #     CONFIG_DB_PASSWORD: ku5Ne(szK4
+  #   command: sh /apollo/admin_start.sh
+  #   restart: always
+  #   network_mode: "host"
+  # service_report:
+  #   container_name: service_report
+  #   volumes:
+  #     - /etc/hosts:/etc/hosts
+  #     - /data/www/service_report/:/www/
+  #     - /data/static/:/static/
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/report:0.2.1
+  #   command: /bin/bash /www/start_test.sh
+  #   ##网络配置必须为host
+  #   network_mode: "host"
+  # ## DNS redis
+  # dns_redis_7379:
+    # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+    # container_name: dns_redis_7379
+    # volumes:
+    #   - ./redis_dns/:/etc/redis
+    #   - dns_redis_data_7379:/data
+    # command: redis-server /etc/redis/redis_7379.conf
+    # network_mode: "host"
+  # #ydredis sentinel
+  # senti_redis_6379:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_redis_6379
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #     - ydredis_data_6379:/data
+  #   command: redis-server /etc/redis/redis_6379.conf
+  #   network_mode: "host"
+  # senti_redis_6380:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_redis_6380
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #     - ydredis_data_6380:/data
+  #   command: redis-server /etc/redis/redis_6380.conf
+  #   network_mode: "host"
+  # senti_redis_6381:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_redis_6381
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #     - ydredis_data_6381:/data
+  #   command: redis-server /etc/redis/redis_6381.conf
+  #   network_mode: "host"
+  # senti_26379:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_26379
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #   command: redis-sentinel /etc/redis/senti_26379.conf
+  #   network_mode: "host"
+  # senti_26380:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_26380
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #   command: redis-sentinel /etc/redis/senti_26380.conf
+  #   network_mode: "host"
+  # senti_26381:
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/redis:5_yd
+  #   container_name: senti_26381
+  #   volumes:
+  #     - ./redis_sentinel/:/etc/redis
+  #   command: redis-sentinel /etc/redis/senti_26381.conf
+  #   network_mode: "host"
+  # amqproxy0:
+  #   container_name: amqproxy0
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/amqproxy:0.1.0
+  #   ports:
+  #     - 5680:5673
+  #   volumes:
+  #     - /data/docker/amqproxy/tmp:/tmp
+  #   environment:
+  #     LISTEN_ADDRESS: 0.0.0.0
+  #     LISTEN_PORT: 5673
+  #     AMQP_URL: amqp://172.16.100.116:5670
+  #   #command: /app/bin/amqproxy
+  #   restart: always
+  # amqproxy1:
+  #   container_name: amqproxy1
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/amqproxy:0.1.0
+  #   ports:
+  #     - 5681:5673
+  #   volumes:
+  #     - /data/docker/amqproxy/tmp:/tmp
+  #   environment:
+  #     LISTEN_ADDRESS: 0.0.0.0
+  #     LISTEN_PORT: 5673
+  #     AMQP_URL: amqp://172.16.100.116:5671
+  #   #command: /app/bin/amqproxy
+  #   restart: always
+  # amqproxy2:
+  #   container_name: amqproxy2
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/amqproxy:0.1.0
+  #   ports:
+  #     - 5682:5673
+  #   volumes:
+  #     - /data/docker/amqproxy/tmp:/tmp
+  #   environment:
+  #     LISTEN_ADDRESS: 0.0.0.0
+  #     LISTEN_PORT: 5673
+  #     AMQP_URL: amqp://172.16.100.116:5672
+  #   #command: /app/bin/amqproxy
+  #   restart: always
+  # amqproxy3:
+  #   container_name: amqproxy3
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/amqproxy:0.1.0
+  #   ports:
+  #     - 5683:5673
+  #   volumes:
+  #     - /data/docker/amqproxy/tmp:/tmp
+  #   environment:
+  #     LISTEN_ADDRESS: 0.0.0.0
+  #     LISTEN_PORT: 5673
+  #     AMQP_URL: amqp://172.16.100.116:5673
+  #   #command: /app/bin/amqproxy
+  #   restart: always
+  # rabbitmq1:
+  #   container_name: rabbitmq1
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/rabbitmq:3.8.11-management
+  #   ports:
+  #     - "15670:15672"
+  #     - "5670:5672"
+  #   networks:
+  #     - default
+  #   volumes:
+  #     - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+  #     - /data/docker/rabbitmq1/data:/var/lib/rabbitmq
+  #   env_file:
+  #     - ./rabbitmq/rabbitmq.env
+  #   environment:
+  #     RABBITMQ_NODENAME: node01
+  #   hostname: rabbitmq1
+  # rabbitmq2:
+  #   container_name: rabbitmq2
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/rabbitmq:3.8.11-management
+  #   ports:
+  #     - "15671:15672"
+  #     - "5671:5672"
+  #   networks:
+  #     - default
+  #   volumes:
+  #     - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+  #     - /data/docker/rabbitmq2/data:/var/lib/rabbitmq
+  #   env_file:
+  #     - ./rabbitmq/rabbitmq.env
+  #   environment:
+  #       RABBITMQ_NODENAME: node02
+  #   hostname: rabbitmq2
+  # rabbitmq3:
+  #   container_name: rabbitmq3
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/rabbitmq:3.8.11-management
+  #   ports:
+  #     - "15672:15672"
+  #     - "5672:5672"
+  #   networks:
+  #     - default
+  #   volumes:
+  #     - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+  #     - /data/docker/rabbitmq3/data:/var/lib/rabbitmq
+  #   env_file:
+  #     - ./rabbitmq/rabbitmq.env
+  #   environment:
+  #       RABBITMQ_NODENAME: node03
+  #   hostname: rabbitmq3
+  # rabbitmq4:
+  #   container_name: rabbitmq4
+  #   image: harbor-jh.bs58i.baishancdnx.com/safe_biz/rabbitmq:3.8.11-management
+  #   ports:
+  #     - "15673:15672"
+  #     - "5673:5672"
+  #   networks:
+  #     - default
+  #   volumes:
+  #     - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+  #     - /data/docker/rabbitmq4/data:/var/lib/rabbitmq
+  #   env_file:
+  #     - ./rabbitmq/rabbitmq.env
+  #   environment:
+  #       RABBITMQ_NODENAME: node04
+  #   hostname: rabbitmq4
+  # home-v5-bundle:
+  #   container_name: home-v5-bundle
+  #   image: harbor-jh.bs58i.baishancdnx.com/frontend/bundle-docker
+  #   volumes:
+  #       - /etc/hosts:/etc/hosts
+  #       - /data/www/home-v5-bundle:/app
+  #   ports:
+  #       - 8101:8101
+  #   command:
+  #       - ./start-docker.sh
+  # yundun-map-report:
+  #   container_name: yundun-map-report
+  #   image: harbor-jh.bs58i.baishancdnx.com/frontend/bundle-docker
+  #   volumes:
+  #       - /etc/hosts:/etc/hosts
+  #       - /data/www/yundun-map-report:/app
+  #   ports:
+  #       - 8303:8303
+  #   command:
+  #       - ./start-docker.sh

@@ -1,0 +1,77 @@
+version: "3.1"
+services:
+  rabbitmq1:
+    image: docker.nodevops.cn/web/rabbitmq:3.8.11-management
+    ports:
+      - "15670:15672"
+      - "5670:5672"
+    networks:
+      - rabbit_network
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      - /data/docker/rabbitmq1/data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: e289b196fc8dad249ab9fba4e6796672
+      RABBITMQ_NODENAME: node01
+      RABBITMQ_DEFAULT_USER: yd_rbtmq_user
+      RABBITMQ_DEFAULT_PASS: yd.rbtMQ.Psw2019
+    hostname: rabbitmq1
+    container_name: rabbitmq1
+  rabbitmq2:
+    image: docker.nodevops.cn/web/rabbitmq:3.8.11-management
+    ports:
+      - "15671:15672"
+      - "5671:5672"
+    networks:
+      - rabbit_network
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      - /data/docker/rabbitmq2/data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: e289b196fc8dad249ab9fba4e6796672
+      RABBITMQ_NODENAME: node02
+      RABBITMQ_DEFAULT_USER: yd_rbtmq_user
+      RABBITMQ_DEFAULT_PASS: yd.rbtMQ.Psw2019
+    hostname: rabbitmq2
+    container_name: rabbitmq2
+  rabbitmq3:
+    image: docker.nodevops.cn/web/rabbitmq:3.8.11-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - rabbit_network
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      - /data/docker/rabbitmq3/data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: e289b196fc8dad249ab9fba4e6796672
+      RABBITMQ_NODENAME: node03
+      RABBITMQ_DEFAULT_USER: yd_rbtmq_user
+      RABBITMQ_DEFAULT_PASS: yd.rbtMQ.Psw2019
+    hostname: rabbitmq3
+    container_name: rabbitmq3
+  rabbitmq4:
+    image: docker.nodevops.cn/web/rabbitmq:3.8.11-management
+    ports:
+      - "15673:15672"
+      - "5673:5672"
+    networks:
+      - rabbit_network
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      - /data/docker/rabbitmq4/data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: e289b196fc8dad249ab9fba4e6796672
+      RABBITMQ_NODENAME: node04
+      RABBITMQ_DEFAULT_USER: yd_rbtmq_user
+      RABBITMQ_DEFAULT_PASS: yd.rbtMQ.Psw2019
+    hostname: rabbitmq4
+    container_name: rabbitmq4
+networks:
+  rabbit_network:
+    driver: bridge

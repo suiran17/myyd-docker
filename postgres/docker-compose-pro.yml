@@ -1,0 +1,13 @@
+---
+version: '3.7'
+volumes:
+    pg_data:
+        name: pg_data
+        driver: local
+services:
+  pg11:
+    image: docker.io/jingwu/pg11:v0.2
+    ports:
+        - 172.16.100.200:5432:5432
+    volumes:
+        - "pg_data:/var/lib/pgsql/11/data/"

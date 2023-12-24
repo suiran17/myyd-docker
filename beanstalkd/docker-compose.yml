@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+    beanstalkd:
+        image: harbor-jh.bs58i.baishancdnx.com/safe_biz/yd-beanstalkd:v1.0
+        ports:
+            - 11300:11300
+        volumes:
+            - /docker_data/beanstalkd/beanstalkd_1/binlog:/var/lib/beanstalkd/binlog
+        container_name: 'beanstalkd'
+        command: -z 66635 -b /var/lib/beanstalkd/binlog -F
+        restart: always
+networks:
+  default:
+    driver: bridge

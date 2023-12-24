@@ -1,0 +1,72 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+#zabbix
+114.55.251.13 zabbix.adminv5.com
+
+127.0.0.1 ydmap.test.nodevops.cn
+127.0.0.1  sso-backend-server.test.nodevops.cn
+127.0.0.1 agent.sso-backend-server.test.nodevops.cn
+127.0.0.1  api.yundun.cn
+127.0.0.1  yundunapi.test.nodevops.cn
+127.0.0.1  feature-930.yundunapiv4.test.nodevops.cn
+
+127.0.0.1  gameddos.test.nodevops.cn report-yundunv5.test.nodevops.cn sso-server.test.nodevops.cn yundunmapreport.test.nodevops.cn fs.test.nodevops.cn
+127.0.0.1  tsgzhome.test.nodevops.cn v5axure.test.nodevops.cn adminV5.test.nodevops.cn
+127.0.0.1  yundunapiv4.test.nodevops.cn homev5.test.nodevops.cn tsgzapi.test.nodevops.cn
+127.0.0.1  broker01.test.nodevops.cn apiv4doc.test.nodevops.cn
+127.0.0.1  php7.yundunapiv4.test.nodevops.cn yundun-ecs.test.nodevops.cn
+127.0.0.1  oversea.test.nodevops.cn dispatchapp.test.nodevops.cn tjkdapi.test.nodevops.cn
+127.0.0.1  adminv5api.test.nodevops.cn tjkd.test.nodevops.cn homev3.test.nodevops.cn
+127.0.0.1  php7.adminv5api.test.nodevops.cn ydmap.test.nodevops.cn
+127.0.0.1  yundun-ecs.test.nodevops.cn passport.test.nodevops.cn yundunapi.test.nodevops.cn
+127.0.0.1  hwws.test.nodevops.cn yundun-ecs-admin.test.nodevops.cn wofang.test.nodevops.cn
+127.0.0.1  sso-backend-server.test.nodevops.cn operationreport.test.nodevops.cn
+127.0.0.1  spiderapidoc.test.nodevops.cn game_security_api.test.nodevops.cn
+127.0.0.1  php7.sso-backend-server.test.nodevops.cn k7ecs.test.nodevops.cn
+127.0.0.1  chuangteng.test.nodevops.cn demo.local.com tjkdadmin.test.nodevops.cn
+127.0.0.1  php7.homev5.test.nodevops.cn youxiadun.test.nodevops.cn
+127.0.0.1  game_security_home.test.nodevops.cn composer.test.nodevops.cn
+127.0.0.1  666cdn.test.nodevops.cn webxury.test.nodevops.cn php7.adminv3.test.nodevops.cn
+127.0.0.1  ngweb.test.nodevops.cn yundunv5.test.nodevops.cn sso-passport.test.nodevops.cn
+127.0.0.1  yundunv5.test.nodevops.cn adminv3.test.nodevops.cn feature-2280.adminv3.test.nodevops.cn feature-2280.adminv5api.test.nodevops.cn
+127.0.0.1  feature-1529.adminv5api.test.nodevops.cn feature-1529.adminv3.test.nodevops.cn
+127.0.0.1  feature-zhangpan.adminv5api.test.nodevops.cn feature-zhangpan.adminv3.test.nodevops.cn
+127.0.0.1  overseas.sso-backend-server.test.nodevops.cn overseas.yundunapiv4.test.nodevops.cn
+
+
+#118.242.17.35 test.yundun.com
+#118.242.17.35 api.yundun.cn
+#172.16.100.104 test.yundun.com
+
+172.16.100.106 test.yundun.com
+172.16.100.44 elastic01.yundun.com
+172.16.100.52 elastic02.yundun.com
+#172.16.100.235 clickhouse.yundun.com
+172.16.100.43 clickhouse.yundun.com
+172.16.100.250 beanstalklog250.yundun.com
+
+172.16.100.11 kafka001.yundun.com
+172.16.100.12 kafka002.yundun.com
+172.16.100.13 kafka003.yundun.com
+172.16.100.203 api.mcs.com
+172.16.100.71 git.nodevops.cn
+
+115.238.233.206 scan.yundun.com
+
+61.133.6.2 www.hy-idc.cn
+
+172.16.100.169 protest
+#丁兆鹏扫备案host
+180.97.220.196 web.ding.yundun.com
+
+
+## uat 仿真环境
+172.16.100.165 uat.nodevops.cn
+
+
+## test_api
+#172.16.100.33  yundunapiv4.test.nodevops.cn adminv5api.test.nodevops.cn homev5.test.nodevops.cn sso-backend-server.test.nodevops.cn
+127.0.0.1  yundunapiv4.test.nodevops.cn adminv5api.test.nodevops.cn homev5.test.nodevops.cn sso-backend-server.test.nodevops.cn
+172.16.100.165 yundunapiv4.pre.nodevops.cn  adminv5api.pre.nodevops.cn  homev5.pre.nodevops.cn  sso-backend-server.pre.nodevops.cn
+172.16.100.242 apiv4.yundun.com             adminv5api.yundun.com       homev5.yundun.com       sso.yundun.com
