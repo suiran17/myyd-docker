@@ -44,17 +44,17 @@ RUN apk add gnu-libiconv --no-cache --repository http://${CONTAINER_PACKAGE_URL}
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 #Install-Composer
-COPY ./composer /tmp/composer
-WORKDIR /tmp/composer
-RUN cp /tmp/composer/composer.phar /usr/bin/composer \
-	&& chmod +x /usr/bin/composer \
-	&& rm -rf /tmp/composer \
-	&& composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+# COPY ./composer /tmp/composer
+# WORKDIR /tmp/composer
+# RUN cp /tmp/composer/composer.phar /usr/bin/composer \
+# 	&& chmod +x /usr/bin/composer \
+# 	&& rm -rf /tmp/composer \
+# 	&& composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 #Install-Composer latestest from official script
-#RUN curl -sS https://getcomposer.org/installer | \
-#    php -- --install-dir=/usr/bin/ --filename=composer \
-#    && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+RUN curl -sS https://getcomposer.org/installer | \
+   php -- --install-dir=/usr/bin/ --filename=composer \
+   && composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 #clear
 RUN  rm -rf /var/cache/apk/*
