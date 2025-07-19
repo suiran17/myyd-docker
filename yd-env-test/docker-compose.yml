@@ -129,7 +129,7 @@ services:
   php:
     container_name: php
     # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/php:7.2-yd
-    image: tokyo.tk93.top:2080/yundun/php:7.2-ydweb
+    image: 172.16.124.180:8077/yundun/php:7.2-ydweb
     volumes:
       - ./hosts:/etc/hosts
       - ${PHP_CODE_DIR}:/www/:rw
@@ -197,7 +197,7 @@ services:
   nginx:
     container_name: nginx
     # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
-    image: tokyo.tk93.top:2080/yundun/nginx:1.19-alpine-yd
+    image: 172.16.124.180:8077/yundun/nginx:1.19-alpine-yd
     ports:
       - 80:80
       - 443:443
