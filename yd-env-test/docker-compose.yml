@@ -194,25 +194,25 @@ services:
 
 
 
-  nginx:
-    container_name: nginx
-    # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
-    image: 172.16.124.180:8077/yundun/nginx:1.19-alpine-yd
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./hosts:/etc/hosts
-      - ${PHP_CODE_DIR}:/www/:rw
-      # - ${PHP_CODE_DIR}/tmp:/tmp/:rw
-      - ./nginx/ssl:/ssl:rw
-      - ./nginx/conf.d:/etc/nginx/conf.d/:rw
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /data/docker/nginx/log:/var/log/nginx/:rw
-      - ./logs/nginx:/var/log/nginx
-    environment:
-      TZ: Asia/Shanghai
-    restart: always
+  # nginx:
+  #   container_name: nginx
+  #   # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/nginx:1.19-alpine-yd
+  #   image: 172.16.124.180:8077/yundun/nginx:1.19-alpine-yd
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   volumes:
+  #     - ./hosts:/etc/hosts
+  #     - ${PHP_CODE_DIR}:/www/:rw
+  #     # - ${PHP_CODE_DIR}/tmp:/tmp/:rw
+  #     - ./nginx/ssl:/ssl:rw
+  #     - ./nginx/conf.d:/etc/nginx/conf.d/:rw
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - /data/docker/nginx/log:/var/log/nginx/:rw
+  #     - ./logs/nginx:/var/log/nginx
+  #   environment:
+  #     TZ: Asia/Shanghai
+  #   restart: always
 
   # nginx_tcp:
   #   container_name: nginx_tcp
