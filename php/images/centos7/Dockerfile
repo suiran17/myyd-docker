@@ -1,14 +1,57 @@
+# 需要统一修改 make -j 16 为实际核心数量
+# 更改后, 从 原来的单核编译 48 分钟, 优化为 多核编译 15 分钟
+
 ARG IMAGE
 FROM ${IMAGE}
 
-#mirror
-RUN cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup \
-    && sed -i s/^mirrorlist/#mirrorlist/ /etc/yum.repos.d/CentOS-Base.repo \
-    && sed -i s/#baseurl/baseurl/ /etc/yum.repos.d/CentOS-Base.repo \
-    && sed -i s/mirror.centos.org/mirrors.tuna.tsinghua.edu.cn/ /etc/yum.repos.d/CentOS-Base.repo
 
-#RUN cat  /etc/yum.repos.d/CentOS-Base.repo
-RUN yum makecache
+#  yum源    2025-08-09 22:11:36
+# 
+# 使用阿里云的YUM镜像
+RUN cat > /etc/yum.repos.d/CentOS-Base.repo <<EOF
+[base]
+name=CentOS-\$releasever - Base
+baseurl=http://mirrors.aliyun.com/centos/\$releasever/os/\$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[updates]
+name=CentOS-\$releasever - Updates
+baseurl=http://mirrors.aliyun.com/centos/\$releasever/updates/\$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[extras]
+name=CentOS-\$releasever - Extras
+baseurl=http://mirrors.aliyun.com/centos/\$releasever/extras/\$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+[centosplus]
+name=CentOS-\$releasever - Plus
+baseurl=http://mirrors.aliyun.com/centos/\$releasever/centosplus/\$basearch/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+EOF
+
+# 清理YUM缓存并创建缓存
+RUN yum clean all && yum makecache fast
+
+# 配置源 end
+
+
+
+# #mirror
+# RUN cp /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup \
+#     && sed -i s/^mirrorlist/#mirrorlist/ /etc/yum.repos.d/CentOS-Base.repo \
+#     && sed -i s/#baseurl/baseurl/ /etc/yum.repos.d/CentOS-Base.repo \
+#     && sed -i s/mirror.centos.org/mirrors.tuna.tsinghua.edu.cn/ /etc/yum.repos.d/CentOS-Base.repo
+
+# #RUN cat  /etc/yum.repos.d/CentOS-Base.repo
+# RUN yum makecache
+
+
 RUN yum update -y
 RUN yum install -y autoconf gcc-c++ gcc libtool make linux-headers libcurl-devel git vim file wget libmcrypt libmcrypt-devel mcrypt mhash \
     && wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
@@ -21,7 +64,7 @@ RUN yum install -y ${PKGS}
 COPY ./soft/Python-3.8.2.tar.xz /root/
 RUN cd /root/ && tar -xf Python-3.8.2.tar.xz \
     && yum install -y libffi-devel tk-devel \
-    && cd Python-3.8.2 && ./configure && make && make install && ln -s /usr/local/bin/pip3 /usr/local/bin/pip && cd ../ \
+    && cd Python-3.8.2 && ./configure && make -j 16 && make install && ln -s /usr/local/bin/pip3 /usr/local/bin/pip && cd ../ \
     && echo "" > /etc/pip.conf \
     && echo "[global]" >> /etc/pip.conf \
     && echo "index-url = https://pypi.tuna.tsinghua.edu.cn/simple" >> /etc/pip.conf \
@@ -34,15 +77,15 @@ RUN cd /root/ && tar -xf Python-3.8.2.tar.xz \
 ARG PHP_VERSION
 COPY ./soft/re2c-2.0.3.tar.xz /tmp/
 RUN cd /tmp && tar -xf re2c-2.0.3.tar.xz && cd re2c-2.0.3 \
-&& ./configure && make && make install
+&& ./configure && make -j 16 && make install
 
 COPY ./soft/cmake-3.18.2.tar.gz /tmp/
 RUN cd /tmp && tar -xf cmake-3.18.2.tar.gz && cd cmake-3.18.2 \
-&& ./bootstrap && make && make install
+&& ./bootstrap && make -j 16 && make install
 
 COPY ./soft/libzip-1.7.3.tar.xz /tmp/
 RUN cd /tmp && tar -xf libzip-1.7.3.tar.xz && cd libzip-1.7.3 \
-&& mkdir build && cd build && cmake .. && make && make install
+&& mkdir build && cd build && cmake .. && make -j 16 && make install
 
 RUN echo '/usr/local/lib64' >> /etc/ld.so.conf \
 && echo '/usr/local/lib' >> /etc/ld.so.conf \
@@ -84,7 +127,7 @@ RUN cd /root/ && tar -xf ${PHP_VERSION}.tar.xz && cd ${PHP_VERSION} \
     --with-jpeg-dir=shared \
     --with-png-dir=shared \
     --without-pear \
-    && make \
+    && make -j 16 \
     && make install \
     && ln -s /usr/local/${PHP_VERSION}       /usr/local/php \
     && ln -s /usr/local/php/bin/php          /usr/bin/php \
@@ -114,14 +157,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ 
 
 COPY ./soft/libdatrie-0.2.11.tar.xz /root/
 RUN cd /root && tar -xf libdatrie-0.2.11.tar.xz && cd libdatrie-0.2.11 \
-&& ./configure && make && make install
+&& ./configure && make -j 16 && make install
 
 ##非标准扩展安装
 ARG EXT_OUT
 RUN mkdir /root/ext
 COPY ./soft/ext /root/ext
 RUN cd /root/ext/ && ls *.tgz | xargs -I{} tar -xf {} \
-    && for ext in ${EXT_OUT}; do cd ${ext}; phpize; ./configure; make; make install; cd ../; done
+    && for ext in ${EXT_OUT}; do cd ${ext}; phpize; ./configure; make -j 16; make install; cd ../; done
 
 ## 基础的文件路经(配置及日志)
 RUN useradd www
@@ -158,6 +201,9 @@ EXPOSE 9500-9599
 ## 添加www用户
 ENV APPLICATION_ENV=''
 WORKDIR /www
+
+RUN mkdir -p /var/www \
+    mkdir -p /var/temp
 
 ## 针对不同的环境做软链
 RUN git config --global user.email "lideqiang@yundun.com" \

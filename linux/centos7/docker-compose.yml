@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  centos-test:
+    image: centos:centos7
+    container_name: centos-test
+    stdin_open: true   # 等价于 docker run -i
+    tty: true          # 等价于 docker run -t
+    restart: unless-stopped

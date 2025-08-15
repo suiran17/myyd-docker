@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  ubuntu2204:
+    image: ubuntu:22.04
+    container_name: ubuntu2204
+    stdin_open: true   # 等价于 -i
+    tty: true          # 等价于 -t
+    command: /bin/bash      # 启动后进入 bash
+    # restart: "no"      # 避免退出后自动重启

@@ -1,0 +1,36 @@
+./configure \
+    --prefix=/usr/local/php8.3 \
+    --with-config-file-path=/usr/local/php8.3/etc \
+    --with-config-file-scan-dir=/usr/local/php8.3/etc/conf.d \
+    --enable-fpm \
+    --disable-cgi \
+    --enable-apcu \
+    --enable-bcmath \
+    --with-calendar \
+    --with-curl \
+    --enable-exif \
+    --enable-ftp \
+    --with-gd --with-freetype --with-jpeg --with-webp \
+    --with-gettext \
+    --with-iconv \
+    --enable-intl \
+    --with-mysqli=mysqlnd \
+    --with-pdo-mysql=mysqlnd \
+    --enable-mbstring \
+    --with-openssl \
+    --enable-pcntl \
+    --with-readline \
+    --enable-shmop \
+    --enable-sockets \
+    --with-sodium \
+    --enable-sysvsem --enable-sysvshm --enable-sysvmsg \
+    --with-xsl \
+    --with-zip \
+    --with-zlib \
+    --enable-opcache \
+    --enable-igbinary \
+    --with-libxml \
+    --enable-soap \
+    --with-pear \
+    --enable-swoole \
+    --with-libdir=lib/x86_64-linux-gnu
