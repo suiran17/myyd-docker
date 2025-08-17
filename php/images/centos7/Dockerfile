@@ -67,9 +67,9 @@ RUN cd /root/ && tar -xf Python-3.8.2.tar.xz \
     && cd Python-3.8.2 && ./configure && make -j 16 && make install && ln -s /usr/local/bin/pip3 /usr/local/bin/pip && cd ../ \
     && echo "" > /etc/pip.conf \
     && echo "[global]" >> /etc/pip.conf \
-    && echo "index-url = https://pypi.tuna.tsinghua.edu.cn/simple" >> /etc/pip.conf \
+    && echo "index-url = https://mirrors.aliyun.com/pypi/simple/" >> /etc/pip.conf \
     && echo "[install]" >> /etc/pip.conf \
-    && echo "trusted-host = https://pypi.tuna.tsinghua.edu.cn" >> /etc/pip.conf \
+    && echo "trusted-host = mirrors.aliyun.com" >> /etc/pip.conf \
     && pip install --upgrade pip \
     && pip install pipenv
 

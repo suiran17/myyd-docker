@@ -46,7 +46,9 @@ services:
         EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
         ZEND_EXT_ENABLE: "opcache xdebug"
     # 修改为本地镜像
-    image: docker.nodevops.cn/web/php:7.2-ydweb
+    # image: docker.nodevops.cn/web/php:7.2-ydweb
+    image: localhost:2080/yundun/php:7.2-ydweb
+    # image: 198.19.249.2:2080/yundun/php:7.2-ydweb
   php72_yd-beast:
     build:
       context: ./images/centos7/

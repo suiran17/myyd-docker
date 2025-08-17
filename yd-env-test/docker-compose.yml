@@ -129,7 +129,8 @@ services:
   php:
     container_name: php
     # image: harbor-jh.bs58i.baishancdnx.com/safe_biz/php:7.2-yd
-    image: 172.16.124.180:8077/yundun/php:7.2-ydweb
+    # image: 172.16.124.180:8077/yundun/php:7.2-ydweb
+    image: localhost:2080/yundun/php:7.2-ydweb
     volumes:
       - ./hosts:/etc/hosts
       - ${PHP_CODE_DIR}:/www/:rw
