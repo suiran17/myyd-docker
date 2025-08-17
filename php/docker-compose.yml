@@ -32,6 +32,8 @@ services:
         EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
         ZEND_EXT_ENABLE: "opcache xdebug"
     image: docker.nodevops.cn/web/php:7.2-yd
+
+  # use
   php72_ydweb:
     build:
       context: ./images/centos7/
@@ -43,6 +45,7 @@ services:
         EXT_OUT: "amqp-1.10.2 mysql-d7643af swoole-4.4.18 memcache-4.0.5.2 memcached-3.1.5 mongodb-1.7.4 redis-5.2.1 yaml-2.1.0 xdebug-2.6.1 igbinary-3.1.5 trie_filter_master proctitle-0.1.2 mongo-1.6.16 mcrypt-1.0.3 uuid-1.1.0 apcu-5.1.18 xhprof-2.3.3-extension beast-4549b2a"
         EXT_ENABLE: "swoole amqp mongodb memcache memcached redis yaml mysql igbinary trie_filter proctitle bcmath mcrypt uuid apcu beast"
         ZEND_EXT_ENABLE: "opcache xdebug"
+    # 修改为本地镜像
     image: docker.nodevops.cn/web/php:7.2-ydweb
   php72_yd-beast:
     build:

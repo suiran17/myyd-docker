@@ -96,37 +96,37 @@ RUN echo '/usr/local/lib64' >> /etc/ld.so.conf \
 
 COPY ./soft/${PHP_VERSION}.tar.xz /root/
 RUN cd /root/ && tar -xf ${PHP_VERSION}.tar.xz && cd ${PHP_VERSION} \
-&& ./configure  --prefix=/usr/local/${PHP_VERSION} \
-    --with-config-file-path=/usr/local/${PHP_VERSION}/etc/ \
-    --with-config-file-scan-dir=/usr/local/${PHP_VERSION}/etc/php.d \
-    --with-openssl \
-    --enable-fpm \
-    --enable-sockets \
-    --enable-sysvshm \
-    --enable-mbstring \
-    --with-freetype-dir=/usr \
-    --with-jpeg-dir \
-    --with-png-dir \
-    --with-zlib-dir \
-    --with-libxml-dir=/usr/lib64/ \
-    --enable-xml \
-    --with-mhash \
-    --with-curl \
-    --with-bz2 \
-    --with-libzip \
-    --with-gd \
-    --enable-zip \
-    --enable-pcntl \ 
-    --enable-pdo \
-    --enable-soap \
-    --with-pdo-mysql \
-    --disable-cgi \
-    --with-fpm-user=www \
-    --with-fpm-group=www \
-    --with-zlib \
-    --with-jpeg-dir=shared \
-    --with-png-dir=shared \
-    --without-pear \
+    && ./configure  --prefix=/usr/local/${PHP_VERSION} \
+        --with-config-file-path=/usr/local/${PHP_VERSION}/etc/ \
+        --with-config-file-scan-dir=/usr/local/${PHP_VERSION}/etc/php.d \
+        --with-openssl \
+        --enable-fpm \
+        --enable-sockets \
+        --enable-sysvshm \
+        --enable-mbstring \
+        --with-freetype-dir=/usr \
+        --with-jpeg-dir \
+        --with-png-dir \
+        --with-zlib-dir \
+        --with-libxml-dir=/usr/lib64/ \
+        --enable-xml \
+        --with-mhash \
+        --with-curl \
+        --with-bz2 \
+        --with-libzip \
+        --with-gd \
+        --enable-zip \
+        --enable-pcntl \ 
+        --enable-pdo \
+        --enable-soap \
+        --with-pdo-mysql \
+        --disable-cgi \
+        --with-fpm-user=www \
+        --with-fpm-group=www \
+        --with-zlib \
+        --with-jpeg-dir=shared \
+        --with-png-dir=shared \
+        --without-pear \
     && make -j 16 \
     && make install \
     && ln -s /usr/local/${PHP_VERSION}       /usr/local/php \
@@ -149,7 +149,7 @@ RUN /usr/bin/php /root/go-pear.phar
 
 ## 标准扩展安装
 ARG EXT_SRC
-RUN for ext in ${EXT_SRC}; do cd /root/${PHP_VERSION}/ext/${ext}; phpize; ./configure; make; make install; done
+RUN for ext in ${EXT_SRC}; do cd /root/${PHP_VERSION}/ext/${ext}; phpize; ./configure; make -j 16; make install; done
 
 ##composer安装及配置
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \

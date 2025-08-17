@@ -135,8 +135,10 @@ services:
       - ${PHP_CODE_DIR}:/www/:rw
       - ${PHP_CODE_DIR}/tmp:/tmp/:rw
       - ./phpc7/script:/root/script
-      - ./phpc7/php.d:/usr/local/php/etc/php.d:ro
-      - ./phpc7/php.ini:/usr/local/php/etc/php.ini:ro
+      - ./phpc7/php.d:/usr/local/php/etc/php.d
+      # - ./phpc7/php.d:/usr/local/php/etc/php.d:ro
+      - ./phpc7/php.ini:/usr/local/php/etc/php.ini
+      # - ./phpc7/php.ini:/usr/local/php/etc/php.ini:ro
       - ./phpc7/php-fpm.conf:/usr/local/php/etc/php-fpm.conf:rw
       - ./phpc7/php-fpm.d:/usr/local/php/etc/php-fpm.d
       - /data/docker/php/log:/var/log/php:rw
