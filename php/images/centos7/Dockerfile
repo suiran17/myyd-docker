@@ -5,31 +5,31 @@ ARG IMAGE
 FROM ${IMAGE}
 
 
-#  yum源    2025-08-09 22:11:36
+#  yum源    2026-02-03 修复：CentOS 7 已 EOL，使用 vault 归档源
 # 
-# 使用阿里云的YUM镜像
+# 使用官方 CentOS Vault 源（EOL 后的归档源）
 RUN cat > /etc/yum.repos.d/CentOS-Base.repo <<EOF
 [base]
-name=CentOS-\$releasever - Base
-baseurl=http://mirrors.aliyun.com/centos/\$releasever/os/\$basearch/
+name=CentOS-7 - Base
+baseurl=http://vault.centos.org/7.9.2009/os/\$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 [updates]
-name=CentOS-\$releasever - Updates
-baseurl=http://mirrors.aliyun.com/centos/\$releasever/updates/\$basearch/
+name=CentOS-7 - Updates
+baseurl=http://vault.centos.org/7.9.2009/updates/\$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 [extras]
-name=CentOS-\$releasever - Extras
-baseurl=http://mirrors.aliyun.com/centos/\$releasever/extras/\$basearch/
+name=CentOS-7 - Extras
+baseurl=http://vault.centos.org/7.9.2009/extras/\$basearch/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 [centosplus]
-name=CentOS-\$releasever - Plus
-baseurl=http://mirrors.aliyun.com/centos/\$releasever/centosplus/\$basearch/
+name=CentOS-7 - Plus
+baseurl=http://vault.centos.org/7.9.2009/centosplus/\$basearch/
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
@@ -53,8 +53,17 @@ RUN yum clean all && yum makecache fast
 
 
 RUN yum update -y
-RUN yum install -y autoconf gcc-c++ gcc libtool make linux-headers libcurl-devel git vim file wget libmcrypt libmcrypt-devel mcrypt mhash \
-    && wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
+# 配置 EPEL 源 (使用官方归档源，EPEL 7 已 EOL)
+RUN cat > /etc/yum.repos.d/epel.repo <<EOF
+[epel]
+name=Extra Packages for Enterprise Linux 7 - \$basearch
+baseurl=https://archives.fedoraproject.org/pub/archive/epel/7/\$basearch/
+enabled=1
+gpgcheck=0
+EOF
+
+RUN yum install -y autoconf gcc-c++ gcc libtool make linux-headers libcurl-devel git vim file wget libmcrypt libmcrypt-devel mcrypt mhash
 
 ## 包更新及配置
 ARG PKGS
@@ -67,9 +76,9 @@ RUN cd /root/ && tar -xf Python-3.8.2.tar.xz \
     && cd Python-3.8.2 && ./configure && make -j 16 && make install && ln -s /usr/local/bin/pip3 /usr/local/bin/pip && cd ../ \
     && echo "" > /etc/pip.conf \
     && echo "[global]" >> /etc/pip.conf \
-    && echo "index-url = https://mirrors.aliyun.com/pypi/simple/" >> /etc/pip.conf \
+    && echo "index-url = https://pypi.org/simple/" >> /etc/pip.conf \
     && echo "[install]" >> /etc/pip.conf \
-    && echo "trusted-host = mirrors.aliyun.com" >> /etc/pip.conf \
+    && echo "trusted-host = pypi.org" >> /etc/pip.conf \
     && pip install --upgrade pip \
     && pip install pipenv
 

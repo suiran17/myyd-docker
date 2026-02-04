@@ -3,4 +3,4 @@ services:
   centos7:
     build:
       context: ./images/centos7/
-    image: docker.nodevops.cn/web/os:centos7
+    image: localhost:2080/yundun/os:centos7
